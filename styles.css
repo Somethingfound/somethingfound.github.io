@@ -101,6 +101,21 @@ html, body {
   background-color: black;
 }
 
+/* Blank cells */
+.cell.blank {
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.cell.blank .cell-front,
+.cell.blank .cell-back {
+  background: transparent;
+}
+
+.cell.blank:hover {
+  opacity: 1;
+}
+
 /* Navigation buttons */
 .cell.static {
   cursor: pointer;

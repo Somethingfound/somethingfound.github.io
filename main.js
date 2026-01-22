@@ -7,11 +7,11 @@ const imageFolders = [
   { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' }
 ];
 
-// Current tab state
+// Current tab state - always hybrid for content
 let currentTab = 'hybrid';
 let previousTab = 'hybrid'; // Track previous tab for returning from contact
 let detailView = null; // Track if detail view is open { imageUrl, folderIndex }
-const tabButtons = ['documentary', 'archive', 'logo', 'fiction', 'hybrid'];
+const tabButtons = ['logo'];
 
 // Track usage count for folders and shuffled order for images
 const folderUsageCount = new Array(imageFolders.length).fill(0);
@@ -93,9 +93,9 @@ function getImageFromFolder(folderIndex) {
 }
 
 function switchTab(tab) {
-  // If clicking contact while already on contact, go back to previous tab
+  // If clicking contact while already on contact, go back to hybrid
   if (tab === 'contact' && currentTab === 'contact') {
-    tab = previousTab;
+    tab = 'hybrid';
   }
   
   if (tab === currentTab) return;
@@ -104,7 +104,8 @@ function switchTab(tab) {
   if (tab !== 'contact' && currentTab !== 'contact') {
     previousTab = currentTab;
   } else if (currentTab === 'contact') {
-    // Returning from contact, don't update previousTab
+    // Returning from contact, set to hybrid
+    currentTab = 'hybrid';
   } else {
     // Going to contact, save current as previous
     previousTab = currentTab;
@@ -112,12 +113,12 @@ function switchTab(tab) {
   
   currentTab = tab;
   
-  // Update button states
+  // Update button states - only update the logo cell
   document.querySelectorAll('.cell.static').forEach(cell => {
     const cellTab = cell.dataset.tab;
-    if (cellTab === tab) {
+    if (cellTab === 'contact' && tab === 'contact') {
       cell.classList.add('flipped');
-    } else {
+    } else if (cellTab === 'contact') {
       cell.classList.remove('flipped');
     }
   });
@@ -432,9 +433,8 @@ function setupGrid() {
     
     // Top row navigation
     if (isTopRow) {
-      const tabName = tabButtons[col];
-      
-      if (tabName === 'logo') {
+      // Only the middle position (col 2) gets the logo
+      if (col === 2) {
         cell.classList.add('logo');
         cell.dataset.tab = 'contact';
         
@@ -460,24 +460,22 @@ function setupGrid() {
         
         cell.addEventListener('click', () => switchTab('contact'));
       } else {
-        cell.dataset.tab = tabName;
+        // Blank cells for other positions
+        cell.classList.add('blank');
+        cell.dataset.tab = 'blank';
         
-        // Front side - white text
+        // Front side - empty
         const labelFront = document.createElement('span');
-        labelFront.textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+        labelFront.textContent = '';
         front.appendChild(labelFront);
         
-        // Back side - black text on white bg
+        // Back side - empty
         const labelBack = document.createElement('span');
-        labelBack.textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+        labelBack.textContent = '';
         back.appendChild(labelBack);
         
-        cell.addEventListener('click', () => switchTab(tabName));
-        
-        // Set default tab (hybrid) as active
-        if (tabName === 'hybrid') {
-          cell.classList.add('flipped');
-        }
+        // Make blank cells non-clickable
+        cell.style.pointerEvents = 'none';
       }
     } else {
       const img = getRandomImage();
