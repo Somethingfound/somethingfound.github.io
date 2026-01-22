@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Something Found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="Video assets/back ground.mp4" type="video/mp4">
+  </video>
+
+  <div class="grid"></div>
+  
+  <div class="contact-panel" id="contactPanel">
+    <button class="close-btn" id="contactCloseBtn">&times;</button>
+    <div class="contact-header">
+      <h1>SOMETHING FOUND</h1>
+      <p class="tagline">A hybrid media company working across documentary film, site-specific artwork, archive, and architecture.</p>
+    </div>
+    
+    <div class="contact-grid">
+      <div class="contact-section">
+        <h3>Contact</h3>
+        <p><a href="mailto:contact@somethingfound.online">contact@somethingfound.online</a></p>
+      </div>
+      
+      <div class="contact-section">
+        <h3>Locations</h3>
+        <p>Bologna<br>Aarhus<br>London</p>
+      </div>
+    </div>
+    
+    <div class="team-grid">
+      <div class="team-member">
+        <h3>Toby Paul Jones</h3>
+        <p>Documentary filmmaker / producer from Wales. Post Production Coordinator on House of the Dragon S1 and Star Wars: Andor S2.</p>
+      </div>
+      
+      <div class="team-member">
+        <h3>Oskar Uhrskov Mikkelsen</h3>
+        <p>Architect and artist from Aarhus, Denmark. Radical sustainability, biomaterials, production/post-production sound.</p>
+      </div>
+      
+      <div class="team-member">
+        <h3>Leonardo Dal Bo</h3>
+        <p>Italian artist and filmmaker, based in Paris.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="detail-panel" id="detailPanel">
+    <button class="close-btn" id="detailCloseBtn">&times;</button>
+    <div class="detail-video"></div>
+    <div class="detail-info">
+      <h2 class="detail-title"></h2>
+      <p class="detail-category"></p>
+      <p class="detail-description"></p>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
