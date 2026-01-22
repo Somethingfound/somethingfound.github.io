@@ -1,10 +1,18 @@
 // Folders with image count and extension
 const imageFolders = [
-  { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project.', vimeoId: '1125334197' },
-  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 10, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary exploring urban landscapes.', vimeoId: '1125339826' },
-  { path: 'Stills/LZ129 stills', count: 31, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'Archive footage of the Hindenburg.', vimeoId: '1134835635' },
-  { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production.', vimeoId: '1135521486' },
-  { path: 'Stills/SELFDESTRUCTIVE stills', count: 6, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' },
+  { path: 'Stills/ANGELIKA stills', count: 7, ext: 'jpg', contain: false, category: 'fiction', name: 'ANGELIKA', description: 'A portrait of Angelika, exploring identity and perception.', vimeoId: '' },
+  { path: 'Stills/CLAYALLIANCE stills', count: 15, ext: 'jpg', contain: false, category: 'documentary', name: 'CLAYALLIANCE', description: 'Documentary about clay workers and their traditional craft.', vimeoId: '' },
+  { path: 'Stills/COOLING SYSTEMS stills', count: 175, ext: 'jpg', contain: false, category: 'documentary', name: 'COOLING SYSTEMS', description: 'An exploration of industrial cooling systems and architecture.', vimeoId: '' },
+  { path: 'Stills/CYBEAU stills', count: 25, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project.', vimeoId: '1125334197' },
+  { path: 'Stills/GRANULAR SPACES stills', count: 37, ext: 'jpg', contain: false, category: 'archive', name: 'GRANULAR SPACES', description: 'Archival exploration of granular landscapes and textures.', vimeoId: '' },
+  { path: 'Stills/I.M.A.G.E stills', count: 14, ext: 'jpg', contain: false, category: 'archive', name: 'I.M.A.G.E', description: 'An experimental archive piece exploring digital imagery.', vimeoId: '' },
+  { path: 'Stills/LA CITTÁ stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ', description: 'A documentary exploring urban landscapes and city life.', vimeoId: '1125339826' },
+  { path: 'Stills/LZ129 stills', count: 33, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'Archive footage of the Hindenburg airship.', vimeoId: '1134835635' },
+  { path: 'Stills/RESPACE stills', count: 20, ext: 'jpg', contain: false, category: 'documentary', name: 'RESPACE', description: 'A documentary about space and spatial relationships.', vimeoId: '' },
+  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'jpg', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece on self-destruction.', vimeoId: '1134868223' },
+  { path: 'Stills/SIGNALOGIA stills', count: 51, ext: 'jpg', contain: false, category: 'documentary', name: 'SIGNALOGIA', description: 'A documentary study of signals and communication systems.', vimeoId: '' },
+  { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production and its cultural significance.', vimeoId: '1135521486' },
+  { path: 'Stills/SUTURE stills', count: 78, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE', description: 'A documentary following surgical procedures and healing.', vimeoId: '' },
 ];
 
 // Current tab state - always hybrid for content
@@ -282,15 +290,8 @@ function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = [])
       const tile = document.createElement('div');
       let img;
       
-      // For the first cycle, use captured images for the first tiles
-      if (cycle === 0 && projectIndex < capturedBottomRowImages.length) {
-        img = {
-          url: capturedBottomRowImages[projectIndex].url,
-          folderIndex: capturedBottomRowImages[projectIndex].folderIndex
-        };
-      } else {
-        img = getUniqueProjectImage(project.index);
-      }
+      // Always get fresh images from correct projects
+      img = getUniqueProjectImage(project.index);
       
       tile.style.cssText = `
         flex: 0 0 20vw;
@@ -525,6 +526,7 @@ function removeContinuousStrip() {
       if (newImage) {
         back.style.backgroundImage = `url('${newImage.url}')`;
         cell.dataset.folderIndex = newImage.folderIndex;
+        cell.dataset.projectName = imageFolders[newImage.folderIndex].name; // Add project name
         if (newImage.contain) {
           back.classList.add('contain');
         } else {
@@ -598,6 +600,7 @@ function closeDetailView() {
     if (newImages[i]) {
       back.style.backgroundImage = `url('${newImages[i].url}')`;
       cell.dataset.folderIndex = newImages[i].folderIndex;
+      cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name; // Add project name
       if (newImages[i].contain) {
         back.classList.add('contain');
       } else {
@@ -700,6 +703,7 @@ function openDetailView(imageUrl, folderIndex) {
           const back = cell.querySelector('.cell-back');
           const targetProject = allProjectsOrdered[col % allProjectsOrdered.length];
           const img = getUniqueRandomImage(targetProject.index);
+          
           back.style.backgroundImage = `url('${img.url}')`;
           cell.dataset.folderIndex = img.folderIndex;
           cell.dataset.projectName = targetProject.name;
@@ -850,6 +854,7 @@ function refreshContentTiles() {
       if (newImages[i]) {
         back.style.backgroundImage = `url('${newImages[i].url}')`;
         cell.dataset.folderIndex = newImages[i].folderIndex;
+        cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name; // Add project name
         if (newImages[i].contain) {
           back.classList.add('contain');
         } else {
@@ -966,6 +971,7 @@ function setupGrid() {
       if (img) {
         back.style.backgroundImage = `url('${img.url}')`;
         cell.dataset.folderIndex = img.folderIndex;
+        cell.dataset.projectName = imageFolders[img.folderIndex].name; // Add project name
         if (img.contain) back.classList.add('contain');
       }
       
@@ -977,6 +983,8 @@ function setupGrid() {
         if (cell.classList.contains('flipped')) {
           const imageUrl = back.style.backgroundImage.slice(5, -2); // Remove url('')
           const folderIndex = parseInt(cell.dataset.folderIndex);
+          const projectName = cell.dataset.projectName;
+          
           openDetailView(imageUrl, folderIndex);
           return;
         }
@@ -991,13 +999,14 @@ function setupGrid() {
         if (img) {
           back.style.backgroundImage = `url('${img.url}')`;
           cell.dataset.folderIndex = img.folderIndex;
+          cell.dataset.projectName = imageFolders[img.folderIndex].name; // Add project name
           if (img.contain) {
             back.classList.add('contain');
           } else {
             back.classList.remove('contain');
           }
         }
-        cell.classList.toggle('flipped');
+        cell.classList.add('flipped');
       });
     }
     
@@ -1034,6 +1043,7 @@ function randomClick() {
         if (img) {
           back.style.backgroundImage = `url('${img.url}')`;
           cell.dataset.folderIndex = img.folderIndex;
+          cell.dataset.projectName = imageFolders[img.folderIndex].name; // Add project name
           if (img.contain) {
             back.classList.add('contain');
           } else {
