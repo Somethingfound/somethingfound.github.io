@@ -4,7 +4,14 @@ const imageFolders = [
   { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary exploring urban landscapes.', vimeoId: '1125339826' },
   { path: 'Stills/LZ129 stills', count: 31, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'Archive footage of the Hindenburg.', vimeoId: '1134835635' },
   { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production.', vimeoId: '1135521486' },
-  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' }
+  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' },
+  { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project.', vimeoId: '1125334197' },
+  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary returning to urban landscapes.', vimeoId: '1125339826' },
+  { path: 'Stills/LZ129 stills', count: 31, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'More archive footage of the Hindenburg.', vimeoId: '1134835635' },
+  { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production continuation.', vimeoId: '1135521486' },
+  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'Another experimental archive piece.', vimeoId: '1134868223' },
+  { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project trilogy.', vimeoId: '1125334197' },
+  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'The final documentary exploring urban landscapes.', vimeoId: '1125339826' }
 ];
 
 // Current tab state - always hybrid for content
@@ -12,6 +19,85 @@ let currentTab = 'hybrid';
 let previousTab = 'hybrid'; // Track previous tab for returning from contact
 let detailView = null; // Track if detail view is open { imageUrl, folderIndex }
 const tabButtons = ['logo'];
+
+// Track used images for bottom row to avoid duplicates
+let usedBottomRowImages = new Set();
+
+// Function to create project order without adjacent duplicates
+function createNonAdjacentProjectOrder(excludeIndex) {
+  const availableProjects = imageFolders
+    .map((f, i) => ({ ...f, index: i }))
+    .filter(f => f.index !== excludeIndex);
+  
+  // Group by name
+  const projectGroups = {};
+  availableProjects.forEach(project => {
+    if (!projectGroups[project.name]) {
+      projectGroups[project.name] = [];
+    }
+    projectGroups[project.name].push(project);
+  });
+  
+  // Create order ensuring no same names are adjacent
+  const result = [];
+  const names = Object.keys(projectGroups).sort();
+  let lastUsedName = null;
+  let remainingProjects = [...names];
+  
+  while (remainingProjects.length > 0) {
+    // Find a name that's different from the last used
+    let availableNames = remainingProjects.filter(name => name !== lastUsedName);
+    
+    // If only one name left and it's the same as last, we have to use it
+    if (availableNames.length === 0 && remainingProjects.length === 1) {
+      availableNames = remainingProjects;
+    }
+    
+    // Pick a random available name
+    const selectedName = availableNames[Math.floor(Math.random() * availableNames.length)];
+    const projectGroup = projectGroups[selectedName];
+    const selectedProject = projectGroup.shift(); // Take first project from group
+    
+    result.push(selectedProject);
+    lastUsedName = selectedName;
+    
+    // Remove name from remaining if no more projects left
+    if (projectGroup.length === 0) {
+      remainingProjects = remainingProjects.filter(name => name !== selectedName);
+    }
+  }
+  
+  return result;
+}
+function getUniqueRandomImage(folderIndex, maxAttempts = 10) {
+  const folder = imageFolders[folderIndex];
+  let attempts = 0;
+  
+  while (attempts < maxAttempts) {
+    const imageNum = Math.floor(Math.random() * folder.count) + 1;
+    const imageUrl = `${folder.path}/${imageNum}.${folder.ext}`;
+    const imageKey = `${folderIndex}-${imageNum}`;
+    
+    if (!usedBottomRowImages.has(imageKey)) {
+      usedBottomRowImages.add(imageKey);
+      return { 
+        url: imageUrl,
+        contain: folder.contain,
+        folderIndex: folderIndex
+      };
+    }
+    attempts++;
+  }
+  
+  // Fallback: return first image if we can't find unique one
+  const fallbackUrl = `${folder.path}/1.${folder.ext}`;
+  usedBottomRowImages.add(`${folderIndex}-1`);
+  return { 
+    url: fallbackUrl,
+    contain: folder.contain,
+    folderIndex: folderIndex
+  };
+}
 
 // Track usage count for folders and shuffled order for images
 const folderUsageCount = new Array(imageFolders.length).fill(0);
@@ -138,6 +224,18 @@ function closeDetailView() {
   // Clear video immediately to stop playback
   detailPanel.querySelector('.detail-video').innerHTML = '';
   
+  // Fade black overlay out to restore background video
+  const blackOverlay = document.getElementById('blackOverlay');
+  blackOverlay.style.opacity = '0';
+  
+  // Restore grid borders for middle rows only
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row >= 1 && row <= 3) {
+      cell.classList.remove('grid-hidden');
+    }
+  });
+  
   // Pre-generate all new images
   const newImages = [];
   cells.forEach((cell, i) => {
@@ -203,6 +301,19 @@ function openDetailView(imageUrl, folderIndex) {
   const detailPanel = document.getElementById('detailPanel');
   const folder = imageFolders[folderIndex];
   
+  // Fade black overlay in for fade-to-black effect
+  const blackOverlay = document.getElementById('blackOverlay');
+  blackOverlay.style.opacity = '1';
+  
+  // Hide grid borders for middle rows only
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row >= 1 && row <= 3) {
+      cell.classList.add('grid-hidden');
+    }
+  });
+  
   // Update detail panel content - use Vimeo player instead of image
   const videoContainer = detailPanel.querySelector('.detail-video');
   videoContainer.innerHTML = ''; // Clear previous
@@ -211,13 +322,11 @@ function openDetailView(imageUrl, folderIndex) {
   detailPanel.querySelector('.detail-category').textContent = folder.category.charAt(0).toUpperCase() + folder.category.slice(1);
   detailPanel.querySelector('.detail-description').textContent = folder.description;
   
-  const grid = document.querySelector('.grid');
-  const cells = grid.querySelectorAll('.cell');
+  // Get all projects in non-adjacent order, excluding current project
+  const allProjectsOrdered = createNonAdjacentProjectOrder(folderIndex);
   
-  // Get category folders for bottom row
-  const categoryFolders = imageFolders
-    .map((f, i) => ({ ...f, index: i }))
-    .filter(f => f.category === folder.category);
+  // Clear used images tracking for new detail view
+  usedBottomRowImages.clear();
   
   // STEP 1: Immediately clear all background images and mark as animating
   requestAnimationFrame(() => {
@@ -241,17 +350,28 @@ function openDetailView(imageUrl, folderIndex) {
         }
       });
       
-      // Update bottom row
+      // Update bottom row - show projects in non-adjacent order
       cells.forEach((cell, i) => {
         const row = Math.floor(i / 5);
         const col = i % 5;
         if (row === 4) {
           cell.classList.add('detail-bottom');
           const back = cell.querySelector('.cell-back');
-          const targetFolder = categoryFolders[col % categoryFolders.length];
-          const img = getImageFromFolder(targetFolder.index);
+          const targetProject = allProjectsOrdered[col % allProjectsOrdered.length];
+          const img = getUniqueRandomImage(targetProject.index);
           back.style.backgroundImage = `url('${img.url}')`;
           cell.dataset.folderIndex = img.folderIndex;
+          cell.dataset.projectName = targetProject.name;
+          
+          // Add project name overlay
+          let nameOverlay = back.querySelector('.project-name-overlay');
+          if (!nameOverlay) {
+            nameOverlay = document.createElement('div');
+            nameOverlay.className = 'project-name-overlay';
+            back.appendChild(nameOverlay);
+          }
+          nameOverlay.textContent = targetProject.name;
+          
           if (img.contain) {
             back.classList.add('contain');
           } else {
@@ -270,6 +390,171 @@ function openDetailView(imageUrl, folderIndex) {
           }
         });
         detailPanel.classList.add('open');
+        
+        // Add mouse wheel scrolling to bottom row
+        const bottomRowCells = Array.from(cells).filter((cell, i) => Math.floor(i / 5) === 4);
+        let scrollOffset = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startScrollOffset = 0;
+        let hasDragged = false;
+        
+        // Create a single continuous strip container
+        const continuousStrip = document.createElement('div');
+        continuousStrip.style.cssText = `
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 20vh;
+          display: flex;
+          transition: transform 0.1s ease-out;
+          cursor: grab;
+          z-index: 10;
+        `;
+        
+        // Create project tiles for continuous scrolling
+        for (let cycle = 0; cycle < 3; cycle++) {
+          allProjectsOrdered.forEach(project => {
+            const tile = document.createElement('div');
+            tile.style.cssText = `
+              flex: 0 0 20vw;
+              height: 100%;
+              position: relative;
+              background-image: url('${getUniqueRandomImage(project.index).url}');
+              background-size: cover;
+              background-position: center;
+              cursor: pointer;
+            `;
+            
+            // Store project data for click handling
+            tile.dataset.projectIndex = project.index;
+            tile.dataset.projectName = project.name;
+            
+            const nameOverlay = document.createElement('div');
+            nameOverlay.className = 'project-name-overlay';
+            nameOverlay.textContent = project.name;
+            tile.appendChild(nameOverlay);
+            
+            // Add click handler to open project detail view
+            tile.addEventListener('click', (e) => {
+              e.stopPropagation();
+              
+              // Only handle click if we haven't dragged
+              if (!hasDragged) {
+                const projectIndex = parseInt(tile.dataset.projectIndex);
+                const projectName = tile.dataset.projectName;
+                
+                // Close current detail view and open new one
+                if (detailView && detailView.folderIndex === projectIndex) {
+                  // Same project - just close
+                  closeDetailView();
+                } else {
+                  // Different project - close current and open new
+                  closeDetailView();
+                  setTimeout(() => {
+                    openDetailView('', projectIndex);
+                  }, 300);
+                }
+              }
+            });
+            
+            continuousStrip.appendChild(tile);
+          });
+        }
+        
+        // Add the strip to the body (not to individual cells)
+        document.body.appendChild(continuousStrip);
+        
+        // Hide the original bottom row cells
+        bottomRowCells.forEach(cell => {
+          cell.style.visibility = 'hidden';
+        });
+        
+        const updateScrollPosition = (offset) => {
+          // Limit scroll range to one full cycle
+          const maxScroll = allProjectsOrdered.length * window.innerWidth * 0.2;
+          offset = offset % maxScroll;
+          if (offset < 0) offset += maxScroll;
+          scrollOffset = offset;
+          
+          // Apply transform to the single strip
+          continuousStrip.style.transform = `translateX(-${scrollOffset}px)`;
+        };
+        
+        const handleWheel = (e) => {
+          e.preventDefault();
+          
+          // Continuous scrolling based on wheel delta
+          const delta = e.deltaY * 0.1; // Adjust sensitivity
+          updateScrollPosition(scrollOffset + delta);
+        };
+        
+        const handleMouseDown = (e) => {
+          isDragging = true;
+          hasDragged = false; // Reset drag flag
+          startX = e.clientX;
+          startScrollOffset = scrollOffset;
+          
+          // Change cursor and remove transition during drag
+          continuousStrip.style.transition = 'none';
+          continuousStrip.style.cursor = 'grabbing';
+          
+          e.preventDefault();
+        };
+        
+        const handleMouseMove = (e) => {
+          if (!isDragging) return;
+          
+          const deltaX = e.clientX - startX;
+          const newOffset = startScrollOffset - deltaX;
+          
+          // Mark as dragged if we've moved enough
+          if (Math.abs(deltaX) > 5) {
+            hasDragged = true;
+          }
+          
+          updateScrollPosition(newOffset);
+        };
+        
+        const handleMouseUp = () => {
+          if (!isDragging) return;
+          
+          isDragging = false;
+          
+          // Restore cursor and transition
+          continuousStrip.style.transition = 'transform 0.1s ease-out';
+          continuousStrip.style.cursor = 'grab';
+          
+          // Reset drag flag after a short delay
+          setTimeout(() => {
+            hasDragged = false;
+          }, 100);
+        };
+        
+        // Add event listeners to the strip
+        continuousStrip.addEventListener('wheel', handleWheel);
+        continuousStrip.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        
+        // Clean up when detail view closes
+        const originalCloseDetailView = closeDetailView;
+        closeDetailView = function() {
+          // Remove the strip from body
+          if (document.body.contains(continuousStrip)) {
+            document.body.removeChild(continuousStrip);
+          }
+          
+          // Show original bottom row cells
+          bottomRowCells.forEach(cell => {
+            cell.style.visibility = 'visible';
+          });
+          
+          // Call original close function
+          originalCloseDetailView();
+        };
+        
         // Load Vimeo iframe after panel is visible
         setTimeout(() => {
           const iframe = document.createElement('iframe');
@@ -297,6 +582,13 @@ function refreshContentTiles() {
   }
   
   if (currentTab === 'contact') {
+    // Fade black overlay in for contact page
+    const blackOverlay = document.getElementById('blackOverlay');
+    blackOverlay.style.opacity = '1';
+    
+    // Hide grid borders
+    cells.forEach(cell => cell.classList.add('grid-hidden'));
+    
     // Use requestAnimationFrame for smooth animation
     requestAnimationFrame(() => {
       // Clear images and mark animating for middle rows (1-3)
@@ -336,6 +628,11 @@ function refreshContentTiles() {
       });
     });
   } else {
+    // Fade black overlay out and restore grid when leaving contact page
+    const blackOverlay = document.getElementById('blackOverlay');
+    blackOverlay.style.opacity = '0';
+    cells.forEach(cell => cell.classList.remove('grid-hidden'));
+    
     // Pre-generate all new images
     const newImages = [];
     cells.forEach((cell, i) => {
