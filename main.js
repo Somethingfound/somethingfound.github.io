@@ -1,17 +1,10 @@
 // Folders with image count and extension
 const imageFolders = [
   { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project.', vimeoId: '1125334197' },
-  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary exploring urban landscapes.', vimeoId: '1125339826' },
+  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 10, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary exploring urban landscapes.', vimeoId: '1125339826' },
   { path: 'Stills/LZ129 stills', count: 31, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'Archive footage of the Hindenburg.', vimeoId: '1134835635' },
   { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production.', vimeoId: '1135521486' },
-  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' },
-  { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project.', vimeoId: '1125334197' },
-  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'A documentary returning to urban landscapes.', vimeoId: '1125339826' },
-  { path: 'Stills/LZ129 stills', count: 31, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: 'More archive footage of the Hindenburg.', vimeoId: '1134835635' },
-  { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production continuation.', vimeoId: '1135521486' },
-  { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'Another experimental archive piece.', vimeoId: '1134868223' },
-  { path: 'Stills/CYBEAU stills', count: 26, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'A fiction film project trilogy.', vimeoId: '1125334197' },
-  { path: 'Stills/LA CITTÁ SUL RETRO stills', count: 9, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'The final documentary exploring urban landscapes.', vimeoId: '1125339826' }
+  { path: 'Stills/SELFDESTRUCTIVE stills', count: 6, ext: 'png', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: 'An experimental archive piece.', vimeoId: '1134868223' },
 ];
 
 // Current tab state - always hybrid for content
@@ -213,6 +206,335 @@ function switchTab(tab) {
   refreshContentTiles();
 }
 
+// Global reference to strip elements
+let currentStrip = null;
+let currentTopBorder = null;
+
+function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = []) {
+  // Remove existing strip if any
+  removeContinuousStrip();
+  
+  // Create strip container
+  currentStrip = document.createElement('div');
+  currentStrip.style.cssText = `
+    position: fixed;
+    bottom: 0;
+    left: -2px;
+    width: calc(100% + 2px);
+    height: 20vh;
+    display: flex;
+    transition: transform 0.1s ease-out;
+    cursor: grab;
+    z-index: 100;
+    box-sizing: border-box;
+  `;
+  
+  // Create top border
+  currentTopBorder = document.createElement('div');
+  currentTopBorder.style.cssText = `
+    position: fixed;
+    bottom: 20vh;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: white;
+    z-index: 1000;
+    pointer-events: none;
+  `;
+  
+  // Track which images we've used for each project
+  const usedProjectImages = {};
+  allProjectsOrdered.forEach(project => {
+    usedProjectImages[project.index] = new Set();
+  });
+  
+  // Function to get a unique image for a project
+  function getUniqueProjectImage(projectIndex) {
+    const maxAttempts = 10;
+    let attempts = 0;
+    
+    while (attempts < maxAttempts) {
+      const img = getImageFromFolder(projectIndex);
+      const imageKey = `${projectIndex}-${img.url.split('/').pop().split('.')[0]}`;
+      
+      if (!usedProjectImages[projectIndex].has(imageKey)) {
+        usedProjectImages[projectIndex].add(imageKey);
+        return img;
+      }
+      attempts++;
+    }
+    
+    // Fallback: clear some used images and try again
+    if (usedProjectImages[projectIndex].size > 0) {
+      usedProjectImages[projectIndex].clear();
+      return getImageFromFolder(projectIndex);
+    }
+    
+    return getImageFromFolder(projectIndex);
+  }
+  
+  // Create initial tiles (more cycles for infinite scroll feel)
+  const cyclesNeeded = allProjectsOrdered.length < 5 ? 10 : 6;
+  const showTitles = true; // Always show titles in the strip
+  
+  for (let cycle = 0; cycle < cyclesNeeded; cycle++) {
+    allProjectsOrdered.forEach((project, projectIndex) => {
+      const tile = document.createElement('div');
+      let img;
+      
+      // For the first cycle, use captured images for the first tiles
+      if (cycle === 0 && projectIndex < capturedBottomRowImages.length) {
+        img = {
+          url: capturedBottomRowImages[projectIndex].url,
+          folderIndex: capturedBottomRowImages[projectIndex].folderIndex
+        };
+      } else {
+        img = getUniqueProjectImage(project.index);
+      }
+      
+      tile.style.cssText = `
+        flex: 0 0 20vw;
+        height: 100%;
+        position: relative;
+        background-image: url('${img.url}');
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        border-left: 1px solid white;
+        box-sizing: border-box;
+      `;
+      
+      // Add project name overlay
+      if (showTitles) {
+        const nameOverlay = document.createElement('div');
+        nameOverlay.className = 'project-name-overlay';
+        nameOverlay.textContent = project.name;
+        tile.appendChild(nameOverlay);
+      }
+      
+      tile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Only handle click if we haven't dragged
+        if (!hasDragged) {
+          if (detailView && detailView.folderIndex === project.index) {
+            closeDetailView();
+          } else {
+            openDetailView('', project.index);
+          }
+        }
+      });
+      
+      currentStrip.appendChild(tile);
+    });
+  }
+  
+  // Add to page
+  document.body.appendChild(currentStrip);
+  document.body.appendChild(currentTopBorder);
+  
+  // Hide original bottom row
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 4) {
+      cell.style.visibility = 'hidden';
+    }
+  });
+  
+  // Add scrolling functionality
+  let scrollOffset = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startScrollOffset = 0;
+  let hasDragged = false;
+  
+  const updateScrollPosition = (offset) => {
+    // Calculate total width of one cycle
+    const tileWidth = window.innerWidth * 0.2;
+    const maxScroll = allProjectsOrdered.length * tileWidth;
+    
+    // Wrap around but keep it smooth
+    scrollOffset = offset;
+    
+    // Apply transform to the strip without transition during scroll
+    currentStrip.style.transition = 'none';
+    currentStrip.style.transform = `translateX(-${scrollOffset}px)`;
+    
+    // Defer DOM manipulation to avoid flickering during scroll
+    requestAnimationFrame(() => {
+      manageTiles();
+    });
+  };
+  
+  const manageTiles = () => {
+    const tiles = currentStrip.children;
+    const tileWidth = window.innerWidth * 0.2;
+    const totalWidth = tiles.length * tileWidth;
+    const viewportWidth = window.innerWidth;
+    const showTitles = true; // Always show titles in the strip
+    
+    // Generate new tiles when scrolling near the end
+    if (scrollOffset > totalWidth - viewportWidth * 2) {
+      // Add another cycle of tiles
+      allProjectsOrdered.forEach(project => {
+        const tile = document.createElement('div');
+        const img = getUniqueProjectImage(project.index);
+        
+        tile.style.cssText = `
+          flex: 0 0 20vw;
+          height: 100%;
+          position: relative;
+          background-image: url('${img.url}');
+          background-size: cover;
+          background-position: center;
+          cursor: pointer;
+          border-left: 1px solid white;
+          box-sizing: border-box;
+        `;
+        
+        // Add project name overlay
+        if (showTitles) {
+          const nameOverlay = document.createElement('div');
+          nameOverlay.className = 'project-name-overlay';
+          nameOverlay.textContent = project.name;
+          tile.appendChild(nameOverlay);
+        }
+        
+        tile.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          if (!hasDragged) {
+            if (detailView && detailView.folderIndex === project.index) {
+              closeDetailView();
+            } else {
+              openDetailView('', project.index);
+            }
+          }
+        });
+        
+        currentStrip.appendChild(tile);
+      });
+    }
+    
+    // Remove tiles that are far off-screen to the left, but be more conservative
+    while (tiles.length > allProjectsOrdered.length * 3 && scrollOffset > tileWidth * 5) {
+      const firstTile = tiles[0];
+      currentStrip.removeChild(firstTile);
+      // Adjust scroll offset to compensate for removed tile
+      scrollOffset -= tileWidth;
+      startScrollOffset -= tileWidth;
+      
+      // Apply the new offset immediately to prevent visual jump
+      currentStrip.style.transform = `translateX(-${scrollOffset}px)`;
+    }
+  };
+  
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY * 0.5; // Increase sensitivity
+    updateScrollPosition(scrollOffset + delta);
+  };
+  
+  const handleMouseDown = (e) => {
+    isDragging = true;
+    hasDragged = false;
+    startX = e.clientX;
+    startScrollOffset = scrollOffset;
+    
+    currentStrip.style.transition = 'none';
+    currentStrip.style.cursor = 'grabbing';
+    e.preventDefault();
+  };
+  
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - startX;
+    const newOffset = startScrollOffset - deltaX;
+    
+    // Mark as dragged if we've moved enough
+    if (Math.abs(deltaX) > 5) {
+      hasDragged = true;
+    }
+    
+    updateScrollPosition(newOffset);
+  };
+  
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    
+    isDragging = false;
+    
+    // Restore transition after a short delay to ensure smooth stop
+    setTimeout(() => {
+      currentStrip.style.transition = 'transform 0.1s ease-out';
+    }, 50);
+    
+    currentStrip.style.cursor = 'grab';
+    
+    // Reset drag flag after a short delay
+    setTimeout(() => {
+      hasDragged = false;
+    }, 100);
+  };
+  
+  // Store event listeners for cleanup
+  currentStrip.handleWheel = handleWheel;
+  currentStrip.handleMouseDown = handleMouseDown;
+  currentStrip.handleMouseMove = handleMouseMove;
+  currentStrip.handleMouseUp = handleMouseUp;
+  
+  // Add event listeners
+  currentStrip.addEventListener('wheel', handleWheel);
+  currentStrip.addEventListener('mousedown', handleMouseDown);
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
+}
+
+function removeContinuousStrip() {
+  if (currentStrip) {
+    // Remove event listeners
+    if (currentStrip.handleWheel) {
+      currentStrip.removeEventListener('wheel', currentStrip.handleWheel);
+      currentStrip.removeEventListener('mousedown', currentStrip.handleMouseDown);
+      document.removeEventListener('mousemove', currentStrip.handleMouseMove);
+      document.removeEventListener('mouseup', currentStrip.handleMouseUp);
+    }
+    
+    // Remove from DOM
+    if (document.body.contains(currentStrip)) {
+      document.body.removeChild(currentStrip);
+    }
+    currentStrip = null;
+  }
+  
+  if (currentTopBorder && document.body.contains(currentTopBorder)) {
+    document.body.removeChild(currentTopBorder);
+    currentTopBorder = null;
+  }
+  
+  // Show original bottom row
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 4) {
+      cell.style.visibility = 'visible';
+      const back = cell.querySelector('.cell-back');
+      const newImage = getRandomImage();
+      if (newImage) {
+        back.style.backgroundImage = `url('${newImage.url}')`;
+        cell.dataset.folderIndex = newImage.folderIndex;
+        if (newImage.contain) {
+          back.classList.add('contain');
+        } else {
+          back.classList.remove('contain');
+        }
+      }
+    }
+  });
+}
+
 function closeDetailView() {
   if (!detailView) return;
   detailView = null;
@@ -223,10 +545,12 @@ function closeDetailView() {
   
   // Clear video immediately to stop playback
   detailPanel.querySelector('.detail-video').innerHTML = '';
-  
   // Fade black overlay out to restore background video
   const blackOverlay = document.getElementById('blackOverlay');
   blackOverlay.style.opacity = '0';
+  
+  // Remove continuous strip and restore bottom row
+  removeContinuousStrip();
   
   // Restore grid borders for middle rows only
   cells.forEach((cell, i) => {
@@ -328,6 +652,23 @@ function openDetailView(imageUrl, folderIndex) {
   // Clear used images tracking for new detail view
   usedBottomRowImages.clear();
   
+  // Capture bottom row images BEFORE they get changed
+  const bottomRowCells = Array.from(cells).filter((cell, i) => Math.floor(i / 5) === 4);
+  const capturedBottomRowImages = [];
+  
+  bottomRowCells.forEach((cell, index) => {
+    const back = cell.querySelector('.cell-back');
+    const imageUrl = back.style.backgroundImage;
+    const folderIndex = cell.dataset.folderIndex;
+    
+    if (imageUrl && folderIndex) {
+      capturedBottomRowImages.push({
+        url: imageUrl.slice(5, -2), // Remove url('') wrapper
+        folderIndex: parseInt(folderIndex)
+      });
+    }
+  });
+  
   // STEP 1: Immediately clear all background images and mark as animating
   requestAnimationFrame(() => {
     cells.forEach((cell, i) => {
@@ -391,169 +732,8 @@ function openDetailView(imageUrl, folderIndex) {
         });
         detailPanel.classList.add('open');
         
-        // Add mouse wheel scrolling to bottom row
-        const bottomRowCells = Array.from(cells).filter((cell, i) => Math.floor(i / 5) === 4);
-        let scrollOffset = 0;
-        let isDragging = false;
-        let startX = 0;
-        let startScrollOffset = 0;
-        let hasDragged = false;
-        
-        // Create a single continuous strip container
-        const continuousStrip = document.createElement('div');
-        continuousStrip.style.cssText = `
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 20vh;
-          display: flex;
-          transition: transform 0.1s ease-out;
-          cursor: grab;
-          z-index: 10;
-        `;
-        
-        // Create project tiles for continuous scrolling
-        for (let cycle = 0; cycle < 3; cycle++) {
-          allProjectsOrdered.forEach(project => {
-            const tile = document.createElement('div');
-            tile.style.cssText = `
-              flex: 0 0 20vw;
-              height: 100%;
-              position: relative;
-              background-image: url('${getUniqueRandomImage(project.index).url}');
-              background-size: cover;
-              background-position: center;
-              cursor: pointer;
-            `;
-            
-            // Store project data for click handling
-            tile.dataset.projectIndex = project.index;
-            tile.dataset.projectName = project.name;
-            
-            const nameOverlay = document.createElement('div');
-            nameOverlay.className = 'project-name-overlay';
-            nameOverlay.textContent = project.name;
-            tile.appendChild(nameOverlay);
-            
-            // Add click handler to open project detail view
-            tile.addEventListener('click', (e) => {
-              e.stopPropagation();
-              
-              // Only handle click if we haven't dragged
-              if (!hasDragged) {
-                const projectIndex = parseInt(tile.dataset.projectIndex);
-                const projectName = tile.dataset.projectName;
-                
-                // Close current detail view and open new one
-                if (detailView && detailView.folderIndex === projectIndex) {
-                  // Same project - just close
-                  closeDetailView();
-                } else {
-                  // Different project - close current and open new
-                  closeDetailView();
-                  setTimeout(() => {
-                    openDetailView('', projectIndex);
-                  }, 300);
-                }
-              }
-            });
-            
-            continuousStrip.appendChild(tile);
-          });
-        }
-        
-        // Add the strip to the body (not to individual cells)
-        document.body.appendChild(continuousStrip);
-        
-        // Hide the original bottom row cells
-        bottomRowCells.forEach(cell => {
-          cell.style.visibility = 'hidden';
-        });
-        
-        const updateScrollPosition = (offset) => {
-          // Limit scroll range to one full cycle
-          const maxScroll = allProjectsOrdered.length * window.innerWidth * 0.2;
-          offset = offset % maxScroll;
-          if (offset < 0) offset += maxScroll;
-          scrollOffset = offset;
-          
-          // Apply transform to the single strip
-          continuousStrip.style.transform = `translateX(-${scrollOffset}px)`;
-        };
-        
-        const handleWheel = (e) => {
-          e.preventDefault();
-          
-          // Continuous scrolling based on wheel delta
-          const delta = e.deltaY * 0.1; // Adjust sensitivity
-          updateScrollPosition(scrollOffset + delta);
-        };
-        
-        const handleMouseDown = (e) => {
-          isDragging = true;
-          hasDragged = false; // Reset drag flag
-          startX = e.clientX;
-          startScrollOffset = scrollOffset;
-          
-          // Change cursor and remove transition during drag
-          continuousStrip.style.transition = 'none';
-          continuousStrip.style.cursor = 'grabbing';
-          
-          e.preventDefault();
-        };
-        
-        const handleMouseMove = (e) => {
-          if (!isDragging) return;
-          
-          const deltaX = e.clientX - startX;
-          const newOffset = startScrollOffset - deltaX;
-          
-          // Mark as dragged if we've moved enough
-          if (Math.abs(deltaX) > 5) {
-            hasDragged = true;
-          }
-          
-          updateScrollPosition(newOffset);
-        };
-        
-        const handleMouseUp = () => {
-          if (!isDragging) return;
-          
-          isDragging = false;
-          
-          // Restore cursor and transition
-          continuousStrip.style.transition = 'transform 0.1s ease-out';
-          continuousStrip.style.cursor = 'grab';
-          
-          // Reset drag flag after a short delay
-          setTimeout(() => {
-            hasDragged = false;
-          }, 100);
-        };
-        
-        // Add event listeners to the strip
-        continuousStrip.addEventListener('wheel', handleWheel);
-        continuousStrip.addEventListener('mousedown', handleMouseDown);
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-        
-        // Clean up when detail view closes
-        const originalCloseDetailView = closeDetailView;
-        closeDetailView = function() {
-          // Remove the strip from body
-          if (document.body.contains(continuousStrip)) {
-            document.body.removeChild(continuousStrip);
-          }
-          
-          // Show original bottom row cells
-          bottomRowCells.forEach(cell => {
-            cell.style.visibility = 'visible';
-          });
-          
-          // Call original close function
-          originalCloseDetailView();
-        };
+        // Create continuous strip
+        createContinuousStrip(allProjectsOrdered, capturedBottomRowImages);
         
         // Load Vimeo iframe after panel is visible
         setTimeout(() => {
@@ -714,6 +894,13 @@ function setupGrid() {
     const row = Math.floor(i / 5);
     const col = i % 5;
     const isTopRow = row === 0;
+
+    if (isTopRow) {
+      cell.classList.add('edge-top');
+    }
+    if (col === 0) {
+      cell.classList.add('edge-left');
+    }
     
     if (isTopRow) {
       cell.classList.add('static');

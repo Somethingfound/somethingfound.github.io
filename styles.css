@@ -7,6 +7,13 @@
 html, body {
   height: 100%;
   overflow: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .bg-video {
@@ -63,7 +70,9 @@ html, body {
 }
 
 .cell {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-bottom: 1px solid white;
   perspective: 1000px;
   cursor: pointer;
   position: relative;
@@ -71,6 +80,14 @@ html, body {
   will-change: transform;
   background: transparent;
   transition: border-color 0.5s ease;
+}
+
+.cell.edge-top {
+  border-top: none;
+}
+
+.cell.edge-left {
+  border-left: none;
 }
 
 .cell::before {
@@ -139,7 +156,7 @@ html, body {
 /* Blank cells */
 .cell.blank {
   cursor: default;
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: white;
   transition: border-color 0.5s ease;
 }
 
@@ -154,11 +171,16 @@ html, body {
 
 /* Hide grid borders when video is playing */
 .cell.grid-hidden {
-  border-color: rgba(255, 255, 255, 0);
+  border-top-color: rgba(255, 255, 255, 0);
+  border-left-color: rgba(255, 255, 255, 0);
 }
 
-.cell.blank.grid-hidden {
-  border-color: rgba(255, 255, 255, 0);
+.cell.grid-hidden.edge-top {
+  border-top: none;
+}
+
+.cell.grid-hidden.edge-left {
+  border-left: none;
 }
 
 /* Project name overlay for bottom row tiles */
@@ -168,13 +190,14 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  font-weight: 400;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   pointer-events: none;
   z-index: 2;
+  letter-spacing: 0.05em;
 }
 
 /* Navigation buttons */
@@ -187,10 +210,10 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   font-weight: 500;
 }
 
@@ -254,7 +277,7 @@ html, body {
   z-index: 100;
   padding: 50px 80px;
   box-sizing: border-box;
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   color: white;
   overflow-y: auto;
   opacity: 0;
@@ -275,18 +298,21 @@ html, body {
 }
 
 .contact-header h1 {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 2.2rem;
+  font-weight: 300;
   margin: 0 0 15px 0;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .contact-header .tagline {
   font-size: 1rem;
   line-height: 1.6;
-  color: #333;
+  color: #ccc;
   margin: 0;
   max-width: 700px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
 
 .contact-content {
@@ -370,10 +396,11 @@ html, body {
 
 .contact-section h3 {
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   margin: 0 0 8px 0;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .contact-section p {
@@ -381,6 +408,8 @@ html, body {
   line-height: 1.6;
   margin: 0;
   color: white;
+  font-weight: 300;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .contact-section a {
@@ -459,17 +488,21 @@ html, body {
 
 .detail-title {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 300;
   margin: 0 0 10px 0;
   color: white;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0.05em;
 }
 
 .detail-category {
   font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: #ccc;
   margin: 0 0 20px 0;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
 }
 
 .detail-description {
@@ -477,5 +510,7 @@ html, body {
   line-height: 1.6;
   color: white;
   margin: 0;
+  font-weight: 300;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
 
