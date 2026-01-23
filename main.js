@@ -11,8 +11,7 @@ const imageFolders = [
   { path: 'Stills/RESPACE stills', count: 20, ext: 'jpg', contain: false, category: 'documentary', name: 'FEET ON THE GROUND, HEAD IN THE SKY', description: 'FEET ON THE GROUND, HEAD IN THE SKY is a documentary recording the connected lives of the residents of Silvertown, London and the diffusive effects of their hidden lives inside the walls of the Tate Institute - a former community hub reclaimed once more to its former glory after years of dereliction and neglect. Directed and Edited by Toby Paul Jones. Composed by Oskar Mikkelsen. Sound by Oskar Mikkelsen. Produced by SOMETHING FOUND.', vimeoId: '' },
   { path: 'Stills/SELFDESTRUCTIVE stills', count: 5, ext: 'jpg', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: '2018, 3 min. The looping sound tape degenerates as the atomic bomb danger is represented over and over in its self-destructive, dreadful yet sublime beauty. As the images echo pieces such as A Movie and The Atomic Café, the question arises: how can we protect ourselves from the naturalization process of the spectacularization of war? By exacerbating this visual phenomenon until we exorcise it? Directed by Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen. Featured on Dogmilk Films.', vimeoId: '1134868223' },
   { path: 'Stills/SIGNALOGIA stills', count: 51, ext: 'jpg', contain: false, category: 'documentary', name: 'SIGNALOGIA', description: '2022 - on going, Italy, France, London, Mexico, site-specific artwork. Featured on Exibart. Through a painting-photography-video practice Signalogia infuses identity into anonymous spaces calling upon the inhabitants to re-identify themselves within the urban context. As the city margin expands, so does the prevalence of anonymous spaces. Signalogia proposes an inward expansion, highlighting new potentials within the already existing border of the metropolis. By bringing presence to otherwise invisible actors like air-inlets, silos, electrical junctions, they are made accomplices in the alternative city. Artwork by Leonardo Dal Bo. Curated by Oskar Uhrskov Mikkelsen.', vimeoId: '1133983165' },
-  { path: 'Stills/SALT stills', count: 60, ext: 'jpg', contain: true, category: 'documentary', name: 'SALT', description: 'A documentary about salt production and its cultural significance.', vimeoId: '1135521486' },
-  { path: 'Stills/SUTURE stills', count: 78, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE', description: 'A documentary following surgical procedures and healing.', vimeoId: '' }
+  { path: 'Stills/SUTURE stills', count: 78, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE', description: 'A documentary following surgical procedures and healing.', vimeoId: '1157528596' }
 ];
 
 // Current tab state - always hybrid for content
@@ -646,7 +645,6 @@ function openDetailView(imageUrl, folderIndex) {
   videoContainer.innerHTML = ''; // Clear previous
   
   detailPanel.querySelector('.detail-title').textContent = folder.name;
-  detailPanel.querySelector('.detail-category').textContent = folder.category.charAt(0).toUpperCase() + folder.category.slice(1);
   detailPanel.querySelector('.detail-description').textContent = folder.description;
   
   // Get all projects in non-adjacent order, excluding current project

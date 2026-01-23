@@ -489,20 +489,10 @@ body::-webkit-scrollbar {
 .detail-title {
   font-size: 1.5rem;
   font-weight: 300;
-  margin: 0 0 10px 0;
+  margin: 0 0 20px 0;
   color: white;
   font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   letter-spacing: 0.05em;
-}
-
-.detail-category {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #ccc;
-  margin: 0 0 20px 0;
-  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 500;
 }
 
 .detail-description {
