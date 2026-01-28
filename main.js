@@ -983,6 +983,12 @@ function closeDetailView() {
   
   const detailPanel = document.getElementById('detailPanel');
   
+  // Clean up bottom row tiles
+  const bottomTiles = detailPanel.querySelector('.bottom-tiles');
+  if (bottomTiles) {
+    bottomTiles.remove();
+  }
+  
   // Clean up picture viewer if it exists
   if (detailPanel.cleanupGallery) {
     detailPanel.cleanupGallery();
@@ -1269,6 +1275,10 @@ function openDetailView(imageUrl, folderIndex) {
             cell.classList.remove('animating');
           }
         });
+        
+        // Create bottom row tiles mirroring top row
+        createBottomRowTiles();
+        
         detailPanel.classList.add('open');
         
         // Load content after panel is visible
@@ -2090,29 +2100,93 @@ function poissonInterval(lambda) {
   return -Math.log(1 - Math.random()) / lambda * 1000;
 }
 
+// Track consecutive project index for phone mode
+let phoneProjectIndex = 0;
+
 function randomClick() {
   // Don't auto-click when contact panel or detail view is open
   if (currentTab !== 'contact' && !detailView) {
-    const cells = document.querySelectorAll('.cell:not(.static):not(.grid-hidden)');
-    if (cells.length > 0) {
-      const randomIndex = Math.floor(Math.random() * cells.length);
-      const cell = cells[randomIndex];
-      // Just flip the tile, don't open detail view
-      if (!cell.classList.contains('flipped')) {
-        const back = cell.querySelector('.cell-back');
-        const img = getRandomImage();
-        if (img) {
-          back.style.backgroundImage = `url('${img.url}')`;
-          cell.dataset.folderIndex = img.folderIndex;
-          cell.dataset.projectName = imageFolders[img.folderIndex].name; // Add project name
-          applyBackgroundSizing(back, img.folderIndex);
+    const config = getGridConfig();
+    
+    // In phone mode, show consecutive projects instead of random
+    if (config.cols === 1) {
+      const cells = document.querySelectorAll('.cell:not(.static):not(.grid-hidden)');
+      if (cells.length > 0 && phoneProjectIndex < imageFolders.length) {
+        const cell = cells[phoneProjectIndex % cells.length];
+        // Just flip the tile, don't open detail view
+        if (!cell.classList.contains('flipped')) {
+          const back = cell.querySelector('.cell-back');
+          const folder = imageFolders[phoneProjectIndex];
+          if (folder && folder.thumbnail) {
+            back.style.backgroundImage = `url('${folder.thumbnail}')`;
+            cell.dataset.folderIndex = phoneProjectIndex;
+            cell.dataset.projectName = folder.name;
+            applyBackgroundSizing(back, phoneProjectIndex);
+            
+            // Add project title to the tile
+            const front = cell.querySelector('.cell-front');
+            if (front) {
+              front.textContent = folder.name;
+              front.style.fontSize = '0.8rem';
+              front.style.padding = '5px';
+              front.style.textAlign = 'center';
+              front.style.display = 'flex';
+              front.style.alignItems = 'center';
+              front.style.justifyContent = 'center';
+            }
+          }
+          cell.classList.toggle('flipped');
+        }
+        phoneProjectIndex++; // Move to next project
+      }
+    } else {
+      // Desktop mode: keep random behavior
+      const cells = document.querySelectorAll('.cell:not(.static):not(.grid-hidden)');
+      if (cells.length > 0) {
+        const randomIndex = Math.floor(Math.random() * cells.length);
+        const cell = cells[randomIndex];
+        // Just flip the tile, don't open detail view
+        if (!cell.classList.contains('flipped')) {
+          const back = cell.querySelector('.cell-back');
+          const img = getRandomImage();
+          if (img) {
+            back.style.backgroundImage = `url('${img.url}')`;
+            cell.dataset.folderIndex = img.folderIndex;
+            cell.dataset.projectName = imageFolders[img.folderIndex].name; // Add project name
+            applyBackgroundSizing(back, img.folderIndex);
+          }
+          cell.classList.toggle('flipped');
         }
       }
-      cell.classList.toggle('flipped');
     }
   }
   const nextDelay = poissonInterval(0.5);
   setTimeout(randomClick, nextDelay);
+}
+
+// Create bottom row tiles mirroring top row
+function createBottomRowTiles() {
+  const detailPanel = document.getElementById('detailPanel');
+  
+  // Remove existing bottom tiles if any
+  const existingBottomTiles = detailPanel.querySelector('.bottom-tiles');
+  if (existingBottomTiles) {
+    existingBottomTiles.remove();
+  }
+  
+  // Create bottom tiles container
+  const bottomTiles = document.createElement('div');
+  bottomTiles.className = 'bottom-tiles';
+  
+  // Create 5 tiles for visual symmetry (no content/functionality)
+  for (let i = 0; i < 5; i++) {
+    const tile = document.createElement('div');
+    tile.className = 'bottom-tile';
+    tile.textContent = ''; // Empty tiles for visual symmetry only
+    bottomTiles.appendChild(tile);
+  }
+  
+  detailPanel.appendChild(bottomTiles);
 }
 
 // Initialize grid immediately when page loads

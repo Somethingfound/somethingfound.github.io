@@ -691,11 +691,12 @@ body::-webkit-scrollbar {
   
   .detail-info {
     width: calc(100vw - (3 * (100vw / 5))); /* Remaining width */
-    padding: 20px 40px 40px 40px; /* Less padding on top */
+    height: calc(3 * (100vw / 5) * 0.5625); /* Same height as video (3 tiles high) */
+    padding: 20px; /* Equal padding on all sides */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align to top instead of center */
+    justify-content: center; /* Center text vertically */
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -703,6 +704,60 @@ body::-webkit-scrollbar {
   
   .detail-info::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* White line on right side of video window */
+  .detail-video::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: white;
+    z-index: 101;
+    pointer-events: none;
+  }
+  
+  /* Bottom row tile grid */
+  .detail-panel .bottom-tiles {
+    position: absolute;
+    top: calc(3 * var(--tile-height)); /* At video bottom (3 tiles high) */
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - var(--tile-height) - 3 * var(--tile-height)); /* Remaining space: screen - top row - video height */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr;
+    z-index: 99; /* Below white line */
+    pointer-events: auto;
+  }
+  
+  .detail-panel .bottom-tile {
+    border: 1px solid white;
+    border-bottom: 1px solid white; /* Ensure bottom border */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    color: white;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    font-weight: 300;
+    background: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%; /* Fill container height */
+  }
+  
+  .detail-panel .bottom-tile:hover {
+    background: #333;
+  }
+  
+  .detail-panel .bottom-tile.logo {
+    font-weight: 700;
+    font-size: 1.2rem;
   }
 }
 
