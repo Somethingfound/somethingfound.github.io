@@ -18,18 +18,18 @@ function applyBackgroundSizing(back, folderIndex) {
 
 // Folders with image count and extension
 const imageFolders = [
-  { path: 'Stills/ANGELIKA stills', count: 6, ext: 'jpg', contain: false, category: 'Hybrid', name: 'ANGELIKA', description: 'Retracing some car tire traces. Directed by Emil Baadsgaard. Edited and effects by Emil Baadsgaards and Leonardo Dal Bo. Sound design by Oskar Uhrskov Mikkelsen.', vimeoId: '1137756990' },
-  { path: 'Stills/CLAYALLIANCE stills', count: 6, ext: 'jpg', contain: false, category: 'Client', name: 'CLAYALLIANCE', description: 'LerAlliancen (The Clay Alliance) is a collaboration between consultants, builders, researchers and contractors working to develop stamped clay soil for a proven, standardized and scalable building material. The publication presents the first results – from technical tests and robot-based production to international experience and specific pilot projects. Stamped clay soil has a number of advantages: low carbon footprint, high degree of circularity, natural moisture and indoor climate benefits, as well as the possibility of beautiful, exposed surfaces. With LerAlliancen, one of the world\'s oldest building materials is brought into a new era – as a climate-friendly component in the future of construction and an example of how we can reconcile the knowledge of the past with today\'s technology and collaboration. Produced by Something Found for Realdania, Pension Denmark and Kirkbi. Realdania research project report: https://realdania.dk/publikationer/faglige-publikationer/leralliancen', vimeoId: '1139696098' },
-  { path: 'Stills/COOLING SYSTEMS stills', count: 35, ext: 'jpg', contain: false, category: 'documentary', name: 'COOLING SYSTEMS', description: 'Cooling Systems, 2025, Italy. Short - Post Production. Feature in development. At the Cervia salt pan, cycles of life echo one another on an intra-planetary journey between subjects large and small. Established to produce what was once the most widespread natural preservative, salt, the Cervia salt pan is now a sanctuary for a unique ecosystem, controlled by human visitors through their labour and leisure. A film by Something Found. Cinematography Leonardo Dal Bo. Additional Cinematography Oskar Uhrskov Mikkelsen. Editing Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen. Password: tides.', vimeoId: '1147861076' },
-  { path: 'Stills/CYBEAU stills', count: 17, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', description: 'Cybeau is a short film about the pursuit for the ideal mechanical beauty in the near future. Androids compete in "The world\'s most marvelous android" a transhumanist beauty pageant, where the boundaries of the organic body are transgressed into insentient realms. The clash between Organic/Mechanic becomes apparent when a storm pours over the show and the sleek silver skin of the competitors gets washed off, revealing a lost human underneath. The spectacle is shown through brief stroboscopic views of the contestants, highlighting distinct facial features. Password: rainyevening.', vimeoId: '1125334197' },
-  { path: 'Stills/GRANULAR SPACES stills', count: 20, ext: 'jpg', contain: false, category: 'Experimental', name: 'GLINT Video Granulizer', description: 'GLINT is a "Video Granulizer", taking inspiration from granular synthesis. It is a performance tool for real time reactive video.\n\nVideo Granulizer, 2025 (in progress)\n\nOskar Uhrskov Mikkelsen', vimeoId: '' },
-  { path: 'Stills/I.M.A.G.E stills', count: 5, ext: 'jpg', contain: false, category: 'archive', name: 'I.M.A.G.E', description: 'An anti-advert selling those delectable and elusive I.M.A.G.E\'s for your consumption. Imitation becomes realisation. Writer, Director, Editor: Toby Paul Jones. Composed by: Andrew Jones. Starring Sinda Nichols. Special thanks to Mono No Aware, NYC - Intro to 16mm Course.', vimeoId: '' },
-  { path: 'Stills/LA CITTÁ stills', count: 8, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', description: 'La Cittá Sul Retro (The City Tucked Away) follows the night-time inhabitants of Bologna and witnesses the unseen beauty of their lives in the dark. Beneath the sleeping city, a low frequency stirs as the energy of night begins to surface…\n\nCast:\nMassimo Scola - The Beekeeper\nSilvio Cesta Ruiz - Owner of \'Sabor Latino\' Kiosk\nAlessandro Guidi - The Street Artist\nCarlo Filippo Rusconi - The Horse Rider\nAndrea and Gianmarco Bellia - The Altar Boys\nSirol slr - The Road Signs Painters\nThe Vespa Scooter Riders\n\nCrew:\nDirected and filmed by Leonardo Dal Bo Lo Porto\nProduced by Toby Paul Jones\nEdited by Simon Christiansen\nSound Design by Oskar Uhrskov\n\n11 min, 2020, Italy\nPremiere at Cineteca di Bologna\nOnline Premiere via No Budge\nFeatured on Vice ID', vimeoId: '1125339826' },
-  { path: 'Stills/LZ129 stills', count: 20, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', description: '2017, 3min, Denmark. Screened on Vimeo Staff Pick. LZ 129 is a found footage documentary that explores the industrial power and magnificence of the German Zeppelin airship. The film is a portrait of the Zeppelin as a living thing - from its construction, to flight, to its eventual demise in the Hindenburg disaster. LZ 129 evokes an emotional response from the viewer whereby underneath an aesthetic celebration of the Zeppelin as spectacle, Hitler\'s shadow casts a dangerous puzzle - the power of spectacle to avert the eye. Directed by Leonardo Dal Bo. Produced by Toby Paul Jones. Edited by Simon Christiansen, Lukass Purmals and Leonardo Dal Bo. Sound design by Mitra Bolouri Rasmussen.', vimeoId: '1134835635' },
-  { path: 'Stills/RESPACE stills', count: 12, ext: 'jpg', contain: false, category: 'documentary', name: 'FEET ON THE GROUND, HEAD IN THE SKY', description: 'FEET ON THE GROUND, HEAD IN THE SKY is a documentary recording the connected lives of the residents of Silvertown, London and the diffusive effects of their hidden lives inside the walls of the Tate Institute - a former community hub reclaimed once more to its former glory after years of dereliction and neglect. Directed and Edited by Toby Paul Jones. Composed by Oskar Mikkelsen. Sound by Oskar Mikkelsen. Produced by SOMETHING FOUND.', vimeoId: '' },
-  { path: 'Stills/SELFDESTRUCTIVE stills', count: 6, ext: 'jpg', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: '2018, 3 min. The looping sound tape degenerates as the atomic bomb danger is represented over and over in its self-destructive, dreadful yet sublime beauty. As the images echo pieces such as A Movie and The Atomic Café, the question arises: how can we protect ourselves from the naturalization process of the spectacularization of war? By exacerbating this visual phenomenon until we exorcise it? Directed by Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen. Featured on Dogmilk Films.', vimeoId: '1134868223' },
-  { path: 'Stills/SIGNALOGIA stills', count: 43, ext: 'jpg', contain: false, category: 'documentary', name: 'SIGNALOGIA', description: '2022 - on going, Italy, France, London, Mexico, site-specific artwork. Featured on Exibart. Through a painting-photography-video practice Signalogia infuses identity into anonymous spaces calling upon the inhabitants to re-identify themselves within the urban context. As the city margin expands, so does the prevalence of anonymous spaces. Signalogia proposes an inward expansion, highlighting new potentials within the already existing border of the metropolis. By bringing presence to otherwise invisible actors like air-inlets, silos, electrical junctions, they are made accomplices in the alternative city. Artwork by Leonardo Dal Bo. Curated by Oskar Uhrskov Mikkelsen.', vimeoId: '1133983165' },
-  { path: 'Stills/SUTURE stills', count: 70, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE: staging the scars', description: 'Our skin is a surface. A surface which changes with time - the cracks on it are the indelible mark of happenings, of time imprinting itself on our bodies. As I age, cracks - their very essence as tactile evidence of lost (or found) time - have fascinated me. I am a person who ages, whose skin cracks as time moves forward. But as my skin cracks, it leaves a trace of the past in the present, a physical manifestation of living memory.\nA wall, like our skin, has a living memory. A sudden, intense blow can create a crack, or slowly a fracture can form as pieces tumble - but the living memory of those pieces remains - despite their absence, the trace of their presence lingers. Sutures allow our wounds to heal, for cracks to connect, but we will always wear the scars of time, and must not forget where they came from. \nIf a crack is a wound, how can we use them to help us heal the wounds of history? The question is not to look away from the cracks, but to find them, to remember them, and by remembering them, imagine alternative futures. \n\'Nothing is created, nothing is destroyed, everything is transformed\'. - Lavoisier\'s Law\nartwork by Leonardo Dal Bo\ncurated by Toby Paul Jones and Oskar Uhrskov\nexhibited Venice Arsenale\n2024', vimeoId: '1157528596' }
+  { path: 'Stills/ANGELIKA stills', count: 6, ext: 'jpg', contain: false, category: 'Hybrid', name: 'ANGELIKA', year: '2023', location: 'Denmark', cast: 'Directed by Emil Baadsgaard. Edited and effects by Emil Baadsgaards and Leonardo Dal Bo. Sound design by Oskar Uhrskov Mikkelsen.', featured: '', description: 'Retracing some car tire traces.', vimeoId: '1137756990' },
+  { path: 'Stills/CLAYALLIANCE stills', count: 6, ext: 'jpg', contain: false, category: 'Client', name: 'CLAYALLIANCE', year: '2024', location: '', cast: 'Produced by Something Found for Realdania, Pension Denmark and Kirkbi.', featured: '', description: 'LerAlliancen (The Clay Alliance) is a collaboration between consultants, builders, researchers and contractors working to develop stamped clay soil for a proven, standardized and scalable building material. The publication presents the first results – from technical tests and robot-based production to international experience and specific pilot projects. Stamped clay soil has a number of advantages: low carbon footprint, high degree of circularity, natural moisture and indoor climate benefits, as well as the possibility of beautiful, exposed surfaces. With LerAlliancen, one of the world\'s oldest building materials is brought into a new era – as a climate-friendly component in the future of construction and an example of how we can reconcile the knowledge of the past with today\'s technology and collaboration.', vimeoId: '1139696098' },
+  { path: 'Stills/COOLING SYSTEMS stills', count: 35, ext: 'jpg', contain: false, category: 'documentary', name: 'COOLING SYSTEMS', year: '', location: 'Italy', cast: 'A film by Something Found. Cinematography Leonardo Dal Bo. Additional Cinematography Oskar Uhrskov Mikkelsen. Editing Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen.', featured: 'In development', description: 'At the Cervia salt pan, cycles of life echo one another on an intra-planetary journey between subjects large and small. Established to produce what was once the most widespread natural preservative, salt, the Cervia salt pan is now a sanctuary for a unique ecosystem, controlled by human visitors through their labour and leisure. Password: tides.', vimeoId: '' },
+  { path: 'Stills/CYBEAU stills', count: 17, ext: 'jpg', contain: false, category: 'fiction', name: 'CYBEAU', year: '', location: 'France', cast: '', featured: 'In development', description: 'Cybeau is a short film about the pursuit for the ideal mechanical beauty in the near future. Androids compete in "The world\'s most marvelous android" a transhumanist beauty pageant, where the boundaries of the organic body are transgressed into insentient realms. The clash between Organic/Mechanic becomes apparent when a storm pours over the show and the sleek silver skin of the competitors gets washed off, revealing a lost human underneath. The spectacle is shown through brief stroboscopic views of the contestants, highlighting distinct facial features. Password: rainyevening.', vimeoId: '' },
+  { path: 'Stills/GRANULAR SPACES stills', count: 20, ext: 'jpg', contain: false, category: 'Experimental', name: 'GLINT Video Granulizer', year: '', location: 'Denmark', cast: 'Oskar Uhrskov Mikkelsen', featured: 'In development', description: 'GLINT is a "Video Granulizer", taking inspiration from granular synthesis. It is a performance tool for real time reactive video.\n\nVideo Granulizer (in progress)', vimeoId: '' },
+  { path: 'Stills/I.M.A.G.E stills', count: 5, ext: 'jpg', contain: false, category: 'archive', name: 'I.M.A.G.E', year: '2022', location: 'New York', cast: 'Writer, Director, Editor: Toby Paul Jones. Composed by: Andrew Jones. Starring Sinda Nichols. Special thanks to Mono No Aware, NYC - Intro to 16mm Course.', featured: '', description: 'An anti-advert selling those delectable and elusive I.M.A.G.E\'s for your consumption. Imitation becomes realisation.', vimeoId: '' },
+  { path: 'Stills/LA CITTÁ stills', count: 8, ext: 'jpg', contain: false, category: 'documentary', name: 'LA CITTÁ SUL RETRO', year: '2020', location: 'Italy', cast: 'Directed and filmed by Leonardo Dal Bo Lo Porto. Produced by Toby Paul Jones. Edited by Simon Christiansen. Sound Design by Oskar Uhrskov.', featured: 'Premiere at Cineteca di Bologna. Online Premiere via No Budge. Featured on Vice ID', description: 'La Cittá Sul Retro (The City Tucked Away) follows the night-time inhabitants of Bologna and witnesses the unseen beauty of their lives in the dark. Beneath the sleeping city, a low frequency stirs as the energy of night begins to surface…', vimeoId: '1125339826' },
+  { path: 'Stills/LZ129 stills', count: 20, ext: 'jpg', contain: false, category: 'archive', name: 'LZ129', year: '2017', location: 'Denmark', cast: 'Directed by Leonardo Dal Bo. Produced by Toby Paul Jones. Edited by Simon Christiansen, Lukass Purmals and Leonardo Dal Bo. Sound design by Mitra Bolouri Rasmussen.', featured: 'Screened on Vimeo Staff Pick', description: 'LZ 129 is a found footage documentary that explores the industrial power and magnificence of the German Zeppelin airship. The film is a portrait of the Zeppelin as a living thing - from its construction, to flight, to its eventual demise in the Hindenburg disaster. LZ 129 evokes an emotional response from the viewer whereby underneath an aesthetic celebration of the Zeppelin as spectacle, Hitler\'s shadow casts a dangerous puzzle - the power of spectacle to avert the eye.', vimeoId: '1134835635' },
+  { path: 'Stills/RESPACE stills', count: 12, ext: 'jpg', contain: false, category: 'documentary', name: 'FEET ON THE GROUND, HEAD IN THE SKY', year: '', location: 'London', cast: 'Directed and Edited by Toby Paul Jones. Composed by Oskar Mikkelsen. Sound by Oskar Mikkelsen. Produced by SOMETHING FOUND.', featured: 'In development', description: 'A documentary recording the connected lives of the residents of Silvertown, London and the diffusive effects of their hidden lives inside the walls of the Tate Institute - a former community hub reclaimed once more to its former glory after years of dereliction and neglect.', vimeoId: '' },
+  { path: 'Stills/SELFDESTRUCTIVE stills', count: 6, ext: 'jpg', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', year: '2018', location: 'Italy', cast: 'Directed by Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen.', featured: 'Featured on Dogmilk Films', description: 'The looping sound tape degenerates as the atomic bomb danger is represented over and over in its self-destructive, dreadful yet sublime beauty. As the images echo pieces such as A Movie and The Atomic Café, the question arises: how can we protect ourselves from the naturalization process of the spectacularization of war? By exacerbating this visual phenomenon until we exorcise it?', vimeoId: '1134868223' },
+  { path: 'Stills/SIGNALOGIA stills', count: 43, ext: 'jpg', contain: false, category: 'documentary', name: 'SIGNALOGIA', year: '2022', location: 'Italy, France, London, Mexico', cast: 'Artwork by Leonardo Dal Bo. Curated by Oskar Uhrskov Mikkelsen.', featured: 'Featured on Exibart', description: 'Through a painting-photography-video practice Signalogia infuses identity into anonymous spaces calling upon the inhabitants to re-identify themselves within the urban context. As the city margin expands, so does the prevalence of anonymous spaces. Signalogia proposes an inward expansion, highlighting new potentials within the already existing border of the metropolis. By bringing presence to otherwise invisible actors like air-inlets, silos, electrical junctions, they are made accomplices in the alternative city.', vimeoId: '1133983165' },
+  { path: 'Stills/SUTURE stills', count: 70, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE: staging the scars', year: '2024', location: 'Italy', cast: 'artwork by Leonardo Dal Bo. curated by Toby Paul Jones and Oskar Uhrskov. exhibited Venice Arsenale', featured: '', description: 'Our skin is a surface. A surface which changes with time - the cracks on it are the indelible mark of happenings, of time imprinting itself on our bodies. As I age, cracks - their very essence as tactile evidence of lost (or found) time - have fascinated me. I am a person who ages, whose skin cracks as time moves forward. But as my skin cracks, it leaves a trace of the past in the present, a physical manifestation of living memory.\nA wall, like our skin, has a living memory. A sudden, intense blow can create a crack, or slowly a fracture can form as pieces tumble - but the living memory of those pieces remains - despite their absence, the trace of their presence lingers. Sutures allow our wounds to heal, for cracks to connect, but we will always wear the scars of time, and must not forget where they came from. \nIf a crack is a wound, how can we use them to help us heal the wounds of history? The question is not to look away from the cracks, but to find them, to remember them, and by remembering them, imagine alternative futures. \n\'Nothing is created, nothing is destroyed, everything is transformed\'. - Lavoisier\'s Law', vimeoId: '1157528596' }
 ];
 
 // Handle iOS video autoplay
@@ -496,8 +496,14 @@ function hideProjectsPage() {
   
   // Auto-flip one random tile after panel fades like contact page
   setTimeout(() => {
+    // Get current grid configuration
+    const config = getGridConfig();
+    
+    // Skip auto-flip in phone mode (1 column)
+    if (config.cols === 1) return;
+    
     const contentCells = Array.from(cells).filter((c, i) => {
-      const row = Math.floor(i / 5);
+      const row = Math.floor(i / config.cols); // Use dynamic config instead of hardcoded 5
       return row > 0 && !c.classList.contains('flipped');
     });
     if (contentCells.length > 0) {
@@ -1006,9 +1012,35 @@ function closeDetailView() {
     document.body.classList.remove('detail-open');
   }
   
-  // Pre-generate all new images to restore tile backgrounds - NEVER for top row
+  // Pre-generate all new images to restore tile backgrounds - NEVER for top row or phone mode
   const newImages = [];
   const cells = document.querySelector('.grid').querySelectorAll('.cell');
+  
+  // CRITICAL: Skip image regeneration entirely in phone mode
+  if (config.cols === 1) {
+    console.log('Phone mode detected - preserving phone mode images in closeDetailView');
+    // Just restore classes without changing images - preserve phone mode structure
+    cells.forEach((cell, i) => {
+      cell.classList.remove('grid-hidden');
+      cell.classList.remove('animating');
+      cell.classList.remove('contact-flip');
+      cell.classList.remove('flipped');
+      cell.classList.remove('detail-bottom');
+      
+      // CRITICAL: Ensure phone mode back elements remain visible
+      const back = cell.querySelector('.cell-back');
+      if (back) {
+        back.style.visibility = 'visible';
+        back.style.opacity = '1';
+        back.style.transform = 'none'; // Ensure no rotation in phone mode
+      }
+    });
+    
+    // Close the detail panel
+    detailPanel.classList.remove('open');
+    detailView = null;
+    return; // Exit early for phone mode
+  }
   
   cells.forEach((cell, i) => {
     const row = Math.floor(i / config.cols);
@@ -1198,6 +1230,16 @@ function createPictureViewer(container, folder) {
   return galleryContainer;
 }
 
+// Function to format description with italic quotes
+function formatDescription(description) {
+  return description
+    .replace(/"([^"]+)"/g, '<span class="detail-quote">"$1"</span>')
+    // Only format single quotes that are clearly actual quotes (philosophical statements, laws, etc.)
+    // Skip formatting for regular text that happens to be long
+    .replace(/'(Nothing is created, nothing is destroyed, everything is transformed)'/g, '<span class="detail-quote">\'Nothing is created, nothing is destroyed, everything is transformed\'</span>')
+    .replace(/'(Lavoisier's Law)'/g, '<span class="detail-quote">\'Lavoisier\'s Law\'</span>');
+}
+
 function openDetailView(imageUrl, folderIndex) {
   detailView = { imageUrl, folderIndex };
   const detailPanel = document.getElementById('detailPanel');
@@ -1226,8 +1268,22 @@ function openDetailView(imageUrl, folderIndex) {
   const videoContainer = detailPanel.querySelector('.detail-video');
   videoContainer.innerHTML = ''; // Clear previous
   
-  detailPanel.querySelector('.detail-title').textContent = folder.name;
-  detailPanel.querySelector('.detail-description').textContent = folder.description;
+  detailPanel.querySelector('.detail-title').innerHTML = folder.name + (folder.year || folder.location ? ' <span class="detail-year">' + (folder.year || '') + (folder.year && folder.location ? ', ' : '') + (folder.location || '') + '</span>' : '');
+  detailPanel.querySelector('.detail-description').innerHTML = formatDescription(folder.description);
+  
+  // Add cast information if available
+  const castElement = detailPanel.querySelector('.detail-cast');
+  if (castElement) {
+    castElement.textContent = folder.cast || '';
+    castElement.style.display = folder.cast ? 'block' : 'none';
+  }
+  
+  // Add featured information if available
+  const featuredElement = detailPanel.querySelector('.detail-featured');
+  if (featuredElement) {
+    featuredElement.textContent = folder.featured || '';
+    featuredElement.style.display = folder.featured ? 'block' : 'none';
+  }
   
   // Get all projects in non-adjacent order, excluding current project
   const allProjectsOrdered = createNonAdjacentProjectOrder(folderIndex);
@@ -1663,8 +1719,11 @@ function refreshContentTiles() {
       }
     }
     
-    // Auto-flip one random tile after panel fades - NEVER for top row
+    // Auto-flip one random tile after panel fades - NEVER for top row or phone mode
     setTimeout(() => {
+      // Skip auto-flip in phone mode (1 column)
+      if (config.cols === 1) return;
+      
       const contentCells = Array.from(cells).filter((c, i) => {
         const row = Math.floor(i / config.cols); // Use dynamic config
         return row > 0 && !c.classList.contains('flipped');
@@ -1687,9 +1746,9 @@ function getGridConfig() {
   let cols, rows;
   
   if (aspectRatio < 1) {
-    // Portrait mode (phones) - always 1 column with scrolling
+    // Portrait mode (phones) - 1 column with enough rows for all projects + logo + contact
     cols = 1;
-    rows = 25; // More rows for scrolling
+    rows = 15; // Show enough tiles for logo + contact + all projects
   } else if (width >= 1200) {
     // Very wide screens - 5x5 = 25 tiles
     cols = 5;
@@ -1709,19 +1768,19 @@ function getGridConfig() {
   } else {
     // Very small screens (landscape phones) - 1 column
     cols = 1;
-    rows = 25;
+    rows = 15; // Show enough tiles even in very small landscape
   }
   
-  // Check if scrolling is needed (portrait mode)
-  const needsScrolling = cols === 1;
+  // Check if scrolling is needed (portrait mode with many tiles)
+  const needsScrolling = cols === 1 && rows > 5; // Enable scrolling if more than 5 tiles in phone mode
   
   // Set logo position (always first tile)
   const logoPosition = 0;
   
-  // In phone mode, we need to ensure projects and contact are in positions 1 and 2
-  // In desktop mode, they remain in their horizontal positions
-  const projectsPosition = cols === 1 ? 1 : 1;
-  const contactPosition = cols === 1 ? 2 : 2;
+  // In phone mode, we need to ensure contact is in position 1 (where projects was)
+  // In desktop mode, contact remains in position 2
+  const projectsPosition = cols === 1 ? null : 1; // Remove projects button in phone mode
+  const contactPosition = cols === 1 ? 1 : 2; // Move contact to position 1 in phone mode
   
   return { 
     cols: cols, 
@@ -1758,7 +1817,7 @@ function updateGridCSS() {
     // Portrait mode: use exact 16:9 tile height and enable scrolling
     const tileWidth = window.innerWidth / config.cols;
     const portraitTileHeight = tileWidth * (9/16); // Exact 16:9 aspect ratio
-    grid.style.gridTemplateRows = `repeat(25, ${portraitTileHeight}px)`;
+    grid.style.gridTemplateRows = `repeat(${config.rows}, ${portraitTileHeight}px)`; // Use actual rows, not hardcoded 25
     grid.classList.add('scrollable');
     
     // Update tile height for portrait mode
@@ -1780,10 +1839,14 @@ function setupGrid() {
   
   // Create the correct number of tiles for each configuration
   let totalTiles;
-  if (config.needsScrolling) {
-    totalTiles = 25; // Always 25 tiles for portrait mode
+  
+  if (config.cols === 1) {
+    // Phone mode: ONLY create exactly what we need - include ALL projects
+    const sortedProjects = imageFolders.sort((a, b) => a.name.localeCompare(b.name));
+    totalTiles = 2 + sortedProjects.length; // Logo + Contact + All projects
   } else {
-    totalTiles = config.cols * config.rows; // Full grid for landscape modes
+    // Desktop mode: full grid
+    totalTiles = config.cols * config.rows;
   }
   
   // Create all grid cells
@@ -1802,7 +1865,8 @@ function setupGrid() {
       cell.classList.add('edge-left');
     }
     
-    if (isTopRow || (config.cols === 1 && i < 3)) {
+    // Only make top row static in desktop mode, not in phone mode
+    if (isTopRow && config.cols !== 1) {
       cell.classList.add('static');
     }
     
@@ -1815,42 +1879,221 @@ function setupGrid() {
     const back = document.createElement('div');
     back.className = 'cell-back';
     
-    // Handle top row navigation (only for the first row in desktop, first 3 tiles in phone)
-    const isNavigationTile = config.cols === 1 ? (i < 3) : isTopRow;
+    // Handle top row navigation (only for desktop mode, phone mode uses completely different logic)
+    const isNavigationTile = config.cols !== 1 && isTopRow;
     
+    // In phone mode, handle ALL cells here, never let them fall through to desktop logic
+    const isPhoneMode = config.cols === 1;
+    
+    console.log(`Cell ${i}: isPhoneMode=${isPhoneMode}, config.cols=${config.cols}, isNavigationTile=${isNavigationTile}`);
+    
+    if (isPhoneMode) {
+      // Phone mode - COMPLETELY OVERRIDE DESKTOP LOGIC
+      const cellIndex = i;
+      
+      console.log(`Phone mode - Creating cell ${cellIndex}`);
+      
+      // CRITICAL: Force phone mode cell to be visible immediately
+      cell.style.width = '100%';
+      cell.style.height = '100%';
+      cell.style.visibility = 'visible';
+      cell.style.opacity = '1';
+      cell.style.display = 'block';
+      cell.style.position = 'relative';
+      cell.style.backgroundColor = 'rgba(0, 255, 0, 0.5)'; // Bright green to verify visibility
+      
+      // Override any desktop classes that might interfere
+      cell.classList.remove('static', 'blank', 'edge-top', 'edge-left');
+      
+      // Force inner to be visible
+      inner.style.visibility = 'visible';
+      inner.style.opacity = '1';
+      inner.style.display = 'flex';
+      inner.style.width = '100%';
+      inner.style.height = '100%';
+      inner.style.position = 'relative';
+      
+      // Force front to be visible
+      front.style.visibility = 'visible';
+      front.style.opacity = '1';
+      front.style.display = 'flex';
+      front.style.width = '100%';
+      front.style.height = '100%';
+      front.style.position = 'absolute';
+      front.style.top = '0';
+      front.style.left = '0';
+      front.style.backgroundColor = 'transparent';
+      
+      // Force back to be visible and on top
+      back.style.visibility = 'visible';
+      back.style.opacity = '1';
+      back.style.display = 'flex';
+      back.style.width = '100%';
+      back.style.height = '100%';
+      back.style.position = 'absolute';
+      back.style.top = '0';
+      back.style.left = '0';
+      back.style.transform = 'rotateX(180deg)';
+      back.style.backgroundColor = 'rgba(0, 255, 0, 0.5)'; // Bright green on back too
+      
+      if (cellIndex === 0) {
+        // Logo cell
+        cell.classList.add('logo');
+        cell.dataset.tab = 'logo';
+        
+        const logoImg = document.createElement('img');
+        logoImg.src = 'SF Logo.png';
+        logoImg.alt = 'SOMETHING FOUND';
+        front.appendChild(logoImg);
+        
+        const logoImgBack = document.createElement('img');
+        logoImgBack.src = 'SF Logo.png';
+        logoImgBack.alt = 'SOMETHING FOUND';
+        back.appendChild(logoImgBack);
+        
+        cell.style.pointerEvents = 'auto';
+        cell.addEventListener('click', returnToHomepage);
+        
+      } else if (cellIndex === 1) {
+        // Contact cell
+        cell.classList.add('contact');
+        cell.dataset.tab = 'contact';
+        
+        const contactLabel = document.createElement('span');
+        contactLabel.className = 'contact-label';
+        contactLabel.textContent = 'Contact';
+        front.appendChild(contactLabel);
+        
+        const contactLabelBack = document.createElement('span');
+        contactLabelBack.className = 'contact-label';
+        contactLabelBack.textContent = 'Contact';
+        back.appendChild(contactLabelBack);
+        
+        cell.addEventListener('click', () => switchTab('contact'));
+        
+      } else {
+        // Project cell
+        const sortedProjects = imageFolders
+          .sort((a, b) => a.name.localeCompare(b.name)); // Include ALL projects in alphabetical order
+        
+        const projectIndex = cellIndex - 2; // Subtract 2 for logo (0) and contact (1)
+        
+        console.log(`Phone mode - Project cell ${cellIndex}, projectIndex: ${projectIndex}, sortedProjects.length: ${sortedProjects.length}`);
+        
+        if (projectIndex < sortedProjects.length && projectIndex >= 0) {
+          const project = sortedProjects[projectIndex];
+          const firstImage = `${project.path}/1.${project.ext}`;
+          
+          console.log(`Phone mode - Cell ${cellIndex} -> Project ${projectIndex}: ${project.name}, image: ${firstImage}`);
+          
+          // CRITICAL: Test if image exists by trying to load it
+          const testImg = new Image();
+          testImg.onload = () => {
+            console.log(`Phone mode - Image loaded successfully: ${firstImage}`);
+          };
+          testImg.onerror = () => {
+            console.error(`Phone mode - Image failed to load: ${firstImage}`);
+          };
+          testImg.src = firstImage;
+          
+          // Set the background image FIRST
+          back.style.backgroundImage = `url('${firstImage}')`;
+          back.style.backgroundSize = 'cover';
+          back.style.backgroundPosition = 'center';
+          back.style.backgroundRepeat = 'no-repeat';
+          back.style.backgroundColor = 'transparent'; // Remove green background to show image
+          
+          // CRITICAL: Don't rotate the back element in phone mode - show it directly
+          back.style.transform = 'none'; // Remove rotation to show image immediately
+          
+          // Force the back element to be on top and visible
+          back.style.visibility = 'visible';
+          back.style.opacity = '1';
+          back.style.zIndex = '10';
+          
+          // Add project name as text to verify cell is working
+          const projectLabel = document.createElement('div');
+          projectLabel.textContent = project.name;
+          projectLabel.style.color = 'white';
+          projectLabel.style.fontSize = '14px';
+          projectLabel.style.fontWeight = 'bold';
+          projectLabel.style.position = 'absolute';
+          projectLabel.style.top = '10px';
+          projectLabel.style.left = '10px';
+          projectLabel.style.zIndex = '20';
+          projectLabel.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+          back.appendChild(projectLabel);
+          
+          cell.dataset.folderIndex = imageFolders.indexOf(project);
+          cell.dataset.projectName = project.name;
+          
+          // CRITICAL: Don't apply background sizing in phone mode - it might randomize images
+          // applyBackgroundSizing(back, cell.dataset.folderIndex);
+          
+          cell.style.pointerEvents = 'auto';
+          
+          // Add click handler for phone mode
+          cell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log(`Phone mode - Clicked project: ${project.name}`);
+            
+            if (currentTab === 'contact') return;
+            
+            const imageUrl = back.style.backgroundImage.slice(5, -2);
+            const folderIndex = parseInt(cell.dataset.folderIndex);
+            openDetailView(imageUrl, folderIndex);
+          });
+        } else {
+          // No more projects - make cell truly non-functional
+          console.log(`Phone mode - No project for index ${projectIndex}`);
+          cell.style.backgroundColor = 'transparent';
+          cell.style.pointerEvents = 'none';
+          cell.style.visibility = 'hidden';
+          back.style.backgroundImage = '';
+          front.style.backgroundImage = '';
+        }
+      }
+      
+      // ALWAYS add the cell to grid in phone mode
+      inner.appendChild(front);
+      inner.appendChild(back);
+      cell.appendChild(inner);
+      grid.appendChild(cell);
+      
+      // Skip ALL desktop logic for phone mode
+      continue;
+    }
+    
+    // DESKTOP MODE ONLY - phone mode never reaches here
     if (isNavigationTile) {
+      // Desktop mode navigation tiles
       const cellIndex = i;
       
       if (cellIndex === config.logoPosition) {
         cell.classList.add('logo');
         cell.dataset.tab = 'logo';
         
-        // Front side
         const logoImg = document.createElement('img');
         logoImg.src = 'SF Logo.png';
         logoImg.alt = 'SOMETHING FOUND';
         front.appendChild(logoImg);
         
-        // Back side (when active)
         const logoImgBack = document.createElement('img');
         logoImgBack.src = 'SF Logo.png';
         logoImgBack.alt = 'SOMETHING FOUND';
         back.appendChild(logoImgBack);
         
-        // Make logo cell clickable to return to homepage
         cell.style.pointerEvents = 'auto';
         cell.addEventListener('click', returnToHomepage);
-      } else if (cellIndex === config.projectsPosition) {
+      } else if (cellIndex === config.projectsPosition && config.projectsPosition !== null) {
         cell.classList.add('projects');
         cell.dataset.tab = 'projects';
         
-        // Front side
         const projectsLabel = document.createElement('span');
         projectsLabel.className = 'projects-label';
         projectsLabel.textContent = 'Projects';
         front.appendChild(projectsLabel);
         
-        // Back side (when active)
         const projectsLabelBack = document.createElement('span');
         projectsLabelBack.className = 'projects-label';
         projectsLabelBack.textContent = 'Projects';
@@ -1861,13 +2104,11 @@ function setupGrid() {
         cell.classList.add('contact');
         cell.dataset.tab = 'contact';
         
-        // Front side
         const contactLabel = document.createElement('span');
         contactLabel.className = 'contact-label';
         contactLabel.textContent = 'Contact';
         front.appendChild(contactLabel);
         
-        // Back side (when active)
         const contactLabelBack = document.createElement('span');
         contactLabelBack.className = 'contact-label';
         contactLabelBack.textContent = 'Contact';
@@ -1879,21 +2120,20 @@ function setupGrid() {
         cell.classList.add('blank');
         cell.dataset.tab = 'blank';
         
-        // Front side - empty
         const labelFront = document.createElement('span');
         labelFront.textContent = '';
         front.appendChild(labelFront);
         
-        // Back side - empty
         const labelBack = document.createElement('span');
         labelBack.textContent = '';
         back.appendChild(labelBack);
         
-        // Make blank cells non-clickable
         cell.style.pointerEvents = 'none';
       }
     } else {
-      // Content cell
+      // Desktop mode content cells - RESTORED!
+      const config = getGridConfig();
+      
       const img = getRandomImage();
       if (img) {
         back.style.backgroundImage = `url('${img.url}')`;
@@ -1903,10 +2143,17 @@ function setupGrid() {
       }
       
       cell.addEventListener('click', () => {
-        // Don't allow clicking when contact panel is open
         if (currentTab === 'contact') return;
         
-        // If already flipped, open detail view
+        const config = getGridConfig();
+        
+        if (config.cols === 1) {
+          const imageUrl = back.style.backgroundImage.slice(5, -2);
+          const folderIndex = parseInt(cell.dataset.folderIndex);
+          openDetailView(imageUrl, folderIndex);
+          return;
+        }
+        
         if (cell.classList.contains('flipped')) {
           const imageUrl = back.style.backgroundImage.slice(5, -2);
           const folderIndex = parseInt(cell.dataset.folderIndex);
@@ -1914,7 +2161,6 @@ function setupGrid() {
           return;
         }
         
-        // Flip cell
         cell.classList.add('flipped');
       });
     }
@@ -1928,6 +2174,11 @@ function setupGrid() {
   // Auto-flip one random content cell after a delay
   setTimeout(() => {
     const cells = grid.querySelectorAll('.cell');
+    const config = getGridConfig();
+    
+    // Skip auto-flip in phone mode (1 column) - NEVER flip random tiles in phone mode
+    if (config.cols === 1) return;
+    
     const contentCells = Array.from(cells).filter((c, i) => {
       const row = Math.floor(i / config.cols);
       return row > 0 && !c.classList.contains('flipped');
@@ -2108,6 +2359,9 @@ function randomClick() {
   if (currentTab !== 'contact' && !detailView) {
     const config = getGridConfig();
     
+    // NEVER auto-click in phone mode - stop all random behavior
+    if (config.cols === 1) return;
+    
     // In phone mode, show consecutive projects instead of random
     if (config.cols === 1) {
       const cells = document.querySelectorAll('.cell:not(.static):not(.grid-hidden)');
@@ -2178,15 +2432,274 @@ function createBottomRowTiles() {
   const bottomTiles = document.createElement('div');
   bottomTiles.className = 'bottom-tiles';
   
-  // Create 5 tiles for visual symmetry (no content/functionality)
+  // Get current video index
+  const currentFolderIndex = detailView ? detailView.folderIndex : 0;
+  
+  console.log('Creating bottom tiles, current index:', currentFolderIndex);
+  
+  // Create 5 tiles with navigation arrows on leftmost and rightmost
   for (let i = 0; i < 5; i++) {
     const tile = document.createElement('div');
     tile.className = 'bottom-tile';
-    tile.textContent = ''; // Empty tiles for visual symmetry only
+    
+    if (i === 0) {
+      // Leftmost tile - previous video arrow
+      const prevFolderIndex = (currentFolderIndex - 1 + imageFolders.length) % imageFolders.length;
+      const prevFolder = imageFolders[prevFolderIndex];
+      
+      console.log('Previous tile:', prevFolderIndex, prevFolder?.name);
+      
+      tile.innerHTML = `
+        <div class="arrow-symbol">←</div>
+        <div class="arrow-title">${prevFolder.name}</div>
+      `;
+      tile.classList.add('nav-arrow');
+      tile.classList.add('prev-arrow');
+      
+      tile.addEventListener('click', () => {
+        console.log('Previous arrow clicked!');
+        navigateToPreviousVideo();
+      });
+      
+      console.log('Added click listener to previous arrow');
+      
+    } else if (i === 4) {
+      // Rightmost tile - next video arrow
+      const nextFolderIndex = (currentFolderIndex + 1) % imageFolders.length;
+      const nextFolder = imageFolders[nextFolderIndex];
+      
+      console.log('Next tile:', nextFolderIndex, nextFolder?.name);
+      
+      tile.innerHTML = `
+        <div class="arrow-symbol">→</div>
+        <div class="arrow-title">${nextFolder.name}</div>
+      `;
+      tile.classList.add('nav-arrow');
+      tile.classList.add('next-arrow');
+      
+      tile.addEventListener('click', () => {
+        console.log('Next arrow clicked!');
+        navigateToNextVideo();
+      });
+      
+      console.log('Added click listener to next arrow');
+      
+    } else {
+      // Middle tiles - empty
+      tile.textContent = '';
+    }
+    
     bottomTiles.appendChild(tile);
   }
   
   detailPanel.appendChild(bottomTiles);
+  console.log('Bottom tiles created and appended');
+}
+
+// Navigate to previous video
+function navigateToPreviousVideo() {
+  console.log('navigateToPreviousVideo called');
+  
+  if (!detailView) {
+    console.log('No detailView, returning');
+    return;
+  }
+  
+  // Store navigation info before closing
+  const currentFolderIndex = detailView.folderIndex;
+  const prevFolderIndex = (currentFolderIndex - 1 + imageFolders.length) % imageFolders.length;
+  const prevFolder = imageFolders[prevFolderIndex];
+  
+  console.log('Current:', currentFolderIndex, 'Previous:', prevFolderIndex, 'Folder:', prevFolder?.name);
+  
+  if (prevFolder) {
+    console.log('Folder exists, constructing image URL...');
+    
+    // Construct the image URL the same way getRandomImage does
+    const imageUrl = `${prevFolder.path}/1.${prevFolder.ext}`; // Use image 1 (first image)
+    
+    console.log('Using imageUrl:', imageUrl);
+    console.log('Vimeo ID:', prevFolder.vimeoId);
+    console.log('Has video:', !!prevFolder.vimeoId);
+    
+    if (imageUrl) {
+      console.log('Image exists, proceeding with navigation');
+      
+      // Update detailView directly without closing
+      detailView = { imageUrl, folderIndex: prevFolderIndex };
+      
+      // Update video and description directly
+      const detailVideo = document.querySelector('.detail-video');
+      const detailTitle = document.querySelector('.detail-title');
+      const detailDescription = document.querySelector('.detail-description');
+      
+      if (detailVideo) {
+        // Clear current video and cleanup any existing gallery
+        detailVideo.innerHTML = '';
+        if (detailPanel.cleanupGallery) {
+          detailPanel.cleanupGallery();
+          detailPanel.cleanupGallery = null;
+        }
+        
+        // Load content the same way openDetailView does
+        if (prevFolder.vimeoId && prevFolder.vimeoId.trim() !== '') {
+          console.log('Loading Vimeo video');
+          // Load Vimeo iframe for projects with videos
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://player.vimeo.com/video/${prevFolder.vimeoId}?autoplay=0&title=0&byline=0&portrait=0`;
+          iframe.setAttribute('frameborder', '0');
+          iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+          iframe.setAttribute('allowfullscreen', '');
+          detailVideo.appendChild(iframe);
+        } else {
+          console.log('Creating picture viewer');
+          // Create picture viewer for projects without videos
+          currentGallery = createPictureViewer(detailVideo, prevFolder);
+          
+          // Store cleanup function
+          detailPanel.cleanupGallery = () => {
+            if (currentGallery && currentGallery.cleanup) {
+              currentGallery.cleanup();
+            }
+          };
+        }
+      }
+      
+      if (detailTitle) {
+        detailTitle.innerHTML = prevFolder.name + (prevFolder.year || prevFolder.location ? ' <span class="detail-year">' + (prevFolder.year || '') + (prevFolder.year && prevFolder.location ? ', ' : '') + (prevFolder.location || '') + '</span>' : '');
+      }
+      
+      if (detailDescription) {
+        detailDescription.innerHTML = formatDescription(prevFolder.description);
+      }
+      
+      // Add cast information if available
+      const castElement = document.querySelector('.detail-cast');
+      if (castElement) {
+        castElement.textContent = prevFolder.cast || '';
+        castElement.style.display = prevFolder.cast ? 'block' : 'none';
+      }
+      
+      // Add featured information if available
+      const featuredElement = document.querySelector('.detail-featured');
+      if (featuredElement) {
+        featuredElement.textContent = prevFolder.featured || '';
+        featuredElement.style.display = prevFolder.featured ? 'block' : 'none';
+      }
+      
+      // Recreate bottom tiles with new navigation
+      createBottomRowTiles();
+      
+      console.log('Navigation complete');
+    } else {
+      console.log('No image found in folder');
+    }
+  } else {
+    console.log('No previous folder found');
+  }
+}
+
+// Navigate to next video
+function navigateToNextVideo() {
+  console.log('navigateToNextVideo called');
+  
+  if (!detailView) {
+    console.log('No detailView, returning');
+    return;
+  }
+  
+  // Store navigation info before closing
+  const currentFolderIndex = detailView.folderIndex;
+  const nextFolderIndex = (currentFolderIndex + 1) % imageFolders.length;
+  const nextFolder = imageFolders[nextFolderIndex];
+  
+  console.log('Current:', currentFolderIndex, 'Next:', nextFolderIndex, 'Folder:', nextFolder?.name);
+  
+  if (nextFolder) {
+    console.log('Folder exists, constructing image URL...');
+    
+    // Construct the image URL the same way getRandomImage does
+    const imageUrl = `${nextFolder.path}/1.${nextFolder.ext}`; // Use image 1 (first image)
+    
+    console.log('Using imageUrl:', imageUrl);
+    console.log('Vimeo ID:', nextFolder.vimeoId);
+    console.log('Has video:', !!nextFolder.vimeoId);
+    
+    if (imageUrl) {
+      console.log('Image exists, proceeding with navigation');
+      
+      // Update detailView directly without closing
+      detailView = { imageUrl, folderIndex: nextFolderIndex };
+      
+      // Update video and description directly
+      const detailVideo = document.querySelector('.detail-video');
+      const detailTitle = document.querySelector('.detail-title');
+      const detailDescription = document.querySelector('.detail-description');
+      
+      if (detailVideo) {
+        // Clear current video and cleanup any existing gallery
+        detailVideo.innerHTML = '';
+        if (detailPanel.cleanupGallery) {
+          detailPanel.cleanupGallery();
+          detailPanel.cleanupGallery = null;
+        }
+        
+        // Load content the same way openDetailView does
+        if (nextFolder.vimeoId && nextFolder.vimeoId.trim() !== '') {
+          console.log('Loading Vimeo video');
+          // Load Vimeo iframe for projects with videos
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://player.vimeo.com/video/${nextFolder.vimeoId}?autoplay=0&title=0&byline=0&portrait=0`;
+          iframe.setAttribute('frameborder', '0');
+          iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+          iframe.setAttribute('allowfullscreen', '');
+          detailVideo.appendChild(iframe);
+        } else {
+          console.log('Creating picture viewer');
+          // Create picture viewer for projects without videos
+          currentGallery = createPictureViewer(detailVideo, nextFolder);
+          
+          // Store cleanup function
+          detailPanel.cleanupGallery = () => {
+            if (currentGallery && currentGallery.cleanup) {
+              currentGallery.cleanup();
+            }
+          };
+        }
+      }
+      
+      if (detailTitle) {
+        detailTitle.innerHTML = nextFolder.name + (nextFolder.year || nextFolder.location ? ' <span class="detail-year">' + (nextFolder.year || '') + (nextFolder.year && nextFolder.location ? ', ' : '') + (nextFolder.location || '') + '</span>' : '');
+      }
+      
+      if (detailDescription) {
+        detailDescription.innerHTML = formatDescription(nextFolder.description);
+      }
+      
+      // Add cast information if available
+      const castElement = document.querySelector('.detail-cast');
+      if (castElement) {
+        castElement.textContent = nextFolder.cast || '';
+        castElement.style.display = nextFolder.cast ? 'block' : 'none';
+      }
+      
+      // Add featured information if available
+      const featuredElement = document.querySelector('.detail-featured');
+      if (featuredElement) {
+        featuredElement.textContent = nextFolder.featured || '';
+        featuredElement.style.display = nextFolder.featured ? 'block' : 'none';
+      }
+      
+      // Recreate bottom tiles with new navigation
+      createBottomRowTiles();
+      
+      console.log('Navigation complete');
+    } else {
+      console.log('No image found in folder');
+    }
+  } else {
+    console.log('No next folder found');
+  }
 }
 
 // Initialize grid immediately when page loads

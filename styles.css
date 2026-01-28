@@ -319,6 +319,23 @@ body::-webkit-scrollbar {
   font-size: 0.7rem;
 }
 
+/* Phone mode centering */
+.cell.contact .cell-front,
+.cell.contact .cell-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell.logo .cell-front,
+.cell.logo .cell-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* Contact flip tiles */
 .cell.contact-flip {
   border-color: rgba(255, 255, 255, 0.15);
@@ -696,10 +713,10 @@ body::-webkit-scrollbar {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center text vertically */
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    justify-content: flex-start; /* Start from top, allow scrolling */
+    overflow-y: auto; /* Enable scrolling for long content */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
   
   .detail-info::-webkit-scrollbar {
@@ -722,15 +739,15 @@ body::-webkit-scrollbar {
   /* Bottom row tile grid */
   .detail-panel .bottom-tiles {
     position: absolute;
-    top: calc(3 * var(--tile-height)); /* At video bottom (3 tiles high) */
+    top: calc(3 * (100vw / 5) * 0.5625); /* At actual video bottom (3 tiles high * 16:9 ratio) */
     left: 0;
     width: 100vw;
-    height: calc(100vh - var(--tile-height) - 3 * var(--tile-height)); /* Remaining space: screen - top row - video height */
+    height: calc(100vh - var(--tile-height) - 3 * (100vw / 5) * 0.5625); /* Remaining space: screen - top row - actual video height */
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: 1fr;
     z-index: 99; /* Below white line */
-    pointer-events: auto;
+    pointer-events: auto !important;
   }
   
   .detail-panel .bottom-tile {
@@ -758,6 +775,31 @@ body::-webkit-scrollbar {
   .detail-panel .bottom-tile.logo {
     font-weight: 700;
     font-size: 1.2rem;
+  }
+  
+  .detail-panel .bottom-tile.nav-arrow {
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+  }
+  
+  .detail-panel .bottom-tile.nav-arrow:hover {
+    background: #333;
+  }
+  
+  .detail-panel .bottom-tile.nav-arrow .arrow-title {
+    font-size: 0.6rem;
+    margin-top: 5px;
+    font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 0.05em;
   }
 }
 
@@ -814,5 +856,37 @@ body::-webkit-scrollbar {
   margin: 0;
   font-weight: 300;
   font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.detail-cast {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: white;
+  margin: 10px 0 0 0;
+  font-weight: 300;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.detail-featured {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: white;
+  margin: 10px 0 0 0;
+  font-weight: 300;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  opacity: 0.7;
+}
+
+.detail-year {
+  color: #888; /* Dark grey */
+  font-weight: 300;
+  font-size: 0.9em;
+}
+
+.detail-quote {
+  color: #888; /* Dark grey */
+  font-style: italic;
 }
 
