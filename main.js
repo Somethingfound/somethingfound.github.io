@@ -242,6 +242,11 @@ function switchTab(tab) {
     tab = 'hybrid';
   }
   
+  // If clicking projects while already on projects, go back to hybrid
+  if (tab === 'projects' && currentTab === 'projects') {
+    tab = 'hybrid';
+  }
+  
   if (tab === currentTab) return;
   
   // Save previous tab (but not if switching to contact)
@@ -325,7 +330,17 @@ function switchTab(tab) {
     currentTab = 'contact';
     refreshContentTiles();
   } else {
+    // Handle hybrid/landing page - clean up both contact and projects
     hideProjectsPage();
+    const contactPanel = document.getElementById('contactPanel');
+    if (contactPanel && contactPanel.classList.contains('open')) {
+      contactPanel.classList.remove('open');
+    }
+    // Clear black overlay when returning to landing page
+    const blackOverlay = document.getElementById('blackOverlay');
+    if (blackOverlay) {
+      blackOverlay.style.opacity = '0';
+    }
   }
   
   // Refresh content tiles
@@ -404,11 +419,6 @@ function showProjectsPage() {
         back.style.backgroundSize = 'cover';
         back.style.backgroundPosition = 'center';
         back.classList.remove('contact-back');
-      } else if (cell.classList.contains('logo')) {
-        back.style.backgroundColor = 'black';
-        back.style.backgroundImage = 'none';
-        back.style.backgroundSize = 'cover';
-        back.style.backgroundPosition = 'center';
       }
     }
   });
@@ -1346,22 +1356,45 @@ function refreshContentTiles() {
           }
         });
         
-        // Clear top row backgrounds to prevent background video showing
+        // Clear top row backgrounds to prevent background video showing - AGGRESSIVE
         cells.forEach((cell, i) => {
           const row = Math.floor(i / config.cols);
           if (row === 0) {
             const back = cell.querySelector('.cell-back');
+            const front = cell.querySelector('.cell-front');
+            
+            // Force black background on both sides
             back.style.backgroundImage = 'none';
-            back.style.backgroundColor = 'black'; // Always black for top row
-            // SPECIFICALLY FIX CONTACT TILE BLACK BACKGROUND
+            back.style.backgroundColor = 'black';
+            back.style.backgroundSize = 'cover';
+            back.style.backgroundPosition = 'center';
+            back.style.backgroundRepeat = 'no-repeat';
+            
+            // Also force front side to be black
+            front.style.backgroundImage = 'none';
+            front.style.backgroundColor = 'black';
+            front.style.backgroundSize = 'cover';
+            front.style.backgroundPosition = 'center';
+            front.style.backgroundRepeat = 'no-repeat';
+            
+            // Remove any conflicting classes
+            back.classList.remove('contact-back');
+            cell.classList.remove('flipped');
+            
+            // SPECIFICALLY FORCE CONTACT TILE BLACK BACKGROUND
             if (cell.classList.contains('contact')) {
               back.style.backgroundColor = 'black';
               back.style.backgroundImage = 'none';
-              // Ensure no other background properties
-              back.style.backgroundSize = 'cover';
-              back.style.backgroundPosition = 'center';
-              // Override any contact-back class styles
-              back.classList.remove('contact-back');
+              front.style.backgroundColor = 'black';
+              front.style.backgroundImage = 'none';
+            }
+            
+            // SPECIFICALLY FORCE PROJECTS TILE BLACK BACKGROUND  
+            if (cell.classList.contains('projects')) {
+              back.style.backgroundColor = 'black';
+              back.style.backgroundImage = 'none';
+              front.style.backgroundColor = 'black';
+              front.style.backgroundImage = 'none';
             }
           }
         });
@@ -1421,6 +1454,49 @@ function refreshContentTiles() {
           }
         });
         
+        // Clear top row backgrounds to prevent background video showing - AGGRESSIVE
+        cells.forEach((cell, i) => {
+          const row = Math.floor(i / config.cols);
+          if (row === 0) {
+            const back = cell.querySelector('.cell-back');
+            const front = cell.querySelector('.cell-front');
+            
+            // Force black background on both sides
+            back.style.backgroundImage = 'none';
+            back.style.backgroundColor = 'black';
+            back.style.backgroundSize = 'cover';
+            back.style.backgroundPosition = 'center';
+            back.style.backgroundRepeat = 'no-repeat';
+            
+            // Also force front side to be black
+            front.style.backgroundImage = 'none';
+            front.style.backgroundColor = 'black';
+            front.style.backgroundSize = 'cover';
+            front.style.backgroundPosition = 'center';
+            front.style.backgroundRepeat = 'no-repeat';
+            
+            // Remove any conflicting classes
+            back.classList.remove('contact-back');
+            cell.classList.remove('flipped');
+            
+            // SPECIFICALLY FORCE CONTACT TILE BLACK BACKGROUND
+            if (cell.classList.contains('contact')) {
+              back.style.backgroundColor = 'black';
+              back.style.backgroundImage = 'none';
+              front.style.backgroundColor = 'black';
+              front.style.backgroundImage = 'none';
+            }
+            
+            // SPECIFICALLY FORCE PROJECTS TILE BLACK BACKGROUND  
+            if (cell.classList.contains('projects')) {
+              back.style.backgroundColor = 'black';
+              back.style.backgroundImage = 'none';
+              front.style.backgroundColor = 'black';
+              front.style.backgroundImage = 'none';
+            }
+          }
+        });
+        
         // Show projects panel after flip completes
         setTimeout(() => {
           cells.forEach((cell, i) => {
@@ -1475,6 +1551,37 @@ function refreshContentTiles() {
     const blackOverlay = document.getElementById('blackOverlay');
     blackOverlay.style.opacity = '0';
     cells.forEach(cell => cell.classList.remove('grid-hidden'));
+    
+    // Restore top row tiles to normal state (remove black background)
+    cells.forEach((cell, i) => {
+      const row = Math.floor(i / config.cols);
+      if (row === 0) {
+        // Remove forced black backgrounds from top row
+        const back = cell.querySelector('.cell-back');
+        const front = cell.querySelector('.cell-front');
+        
+        // Clear forced black backgrounds
+        back.style.backgroundImage = '';
+        back.style.backgroundColor = '';
+        front.style.backgroundImage = '';
+        front.style.backgroundColor = '';
+        
+        // Remove contact-specific classes
+        back.classList.remove('contact-back');
+        cell.classList.remove('flipped');
+        
+        // Don't restore static tiles (logo, projects, contact)
+        if (!cell.classList.contains('static')) {
+          // For non-static top row tiles, restore normal background
+          const img = getRandomImage();
+          if (img) {
+            back.style.backgroundImage = `url('${img.url}')`;
+            cell.dataset.folderIndex = img.folderIndex;
+            cell.dataset.projectName = imageFolders[img.folderIndex].name;
+          }
+        }
+      }
+    });
     
     // Pre-generate all new images - NEVER for top row
     const newImages = [];
@@ -1828,10 +1935,7 @@ window.addEventListener('resize', () => {
 });
 
 // Close buttons
-document.getElementById('detailCloseBtn').addEventListener('click', () => {
-  closeDetailView();
-  switchTab('projects');
-});
+document.getElementById('detailCloseBtn').addEventListener('click', closeDetailView);
 
 // Universal homepage return function
 function returnToHomepage() {
@@ -1870,6 +1974,37 @@ function returnToHomepage() {
   const cells = document.querySelectorAll('.cell');
   const config = getGridConfig(); // Use dynamic config
   cells.forEach(cell => cell.classList.remove('grid-hidden'));
+  
+  // Restore top row tiles to normal state (remove black background)
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols);
+    if (row === 0) {
+      // Remove forced black backgrounds from top row
+      const back = cell.querySelector('.cell-back');
+      const front = cell.querySelector('.cell-front');
+      
+      // Clear forced black backgrounds
+      back.style.backgroundImage = '';
+      back.style.backgroundColor = '';
+      front.style.backgroundImage = '';
+      front.style.backgroundColor = '';
+      
+      // Remove contact-specific classes
+      back.classList.remove('contact-back');
+      cell.classList.remove('flipped');
+      
+      // Don't restore static tiles (logo, projects, contact)
+      if (!cell.classList.contains('static')) {
+        // For non-static top row tiles, restore normal background
+        const img = getRandomImage();
+        if (img) {
+          back.style.backgroundImage = `url('${img.url}')`;
+          cell.dataset.folderIndex = img.folderIndex;
+          cell.dataset.projectName = imageFolders[img.folderIndex].name;
+        }
+      }
+    }
+  });
   
   // Only generate images for non-top-row cells - NEVER for top row
   const newImages = [];
@@ -1958,7 +2093,7 @@ function poissonInterval(lambda) {
 function randomClick() {
   // Don't auto-click when contact panel or detail view is open
   if (currentTab !== 'contact' && !detailView) {
-    const cells = document.querySelectorAll('.cell:not(.static)');
+    const cells = document.querySelectorAll('.cell:not(.static):not(.grid-hidden)');
     if (cells.length > 0) {
       const randomIndex = Math.floor(Math.random() * cells.length);
       const cell = cells[randomIndex];

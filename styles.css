@@ -691,11 +691,11 @@ body::-webkit-scrollbar {
   
   .detail-info {
     width: calc(100vw - (3 * (100vw / 5))); /* Remaining width */
-    padding: 40px;
+    padding: 20px 40px 40px 40px; /* Less padding on top */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Align to top instead of center */
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
