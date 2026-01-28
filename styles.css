@@ -31,13 +31,15 @@ body::-webkit-scrollbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  visibility: visible;
+  transition: opacity 0.2s ease;
+  z-index: 1; /* Behind grid cells but in front of background video */
   pointer-events: none;
+  display: block; /* Ensure it's displayed */
 }
 
 .grid {
@@ -113,6 +115,7 @@ body::-webkit-scrollbar {
   will-change: transform;
   background: transparent;
   transition: border-color 0.5s ease;
+  z-index: 2; /* Above black overlay */
 }
 
 .cell.edge-top {
@@ -142,7 +145,7 @@ body::-webkit-scrollbar {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   transform-style: preserve-3d;
   will-change: transform;
   transform: translateZ(0);
@@ -247,6 +250,7 @@ body::-webkit-scrollbar {
 /* Navigation buttons */
 .cell.static {
   cursor: pointer;
+  z-index: 3; /* Above black overlay and other cells */
 }
 
 .cell.static .cell-front,
@@ -257,8 +261,9 @@ body::-webkit-scrollbar {
   font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-weight: 300;
+  color: white;
 }
 
 .cell.static .cell-front {
@@ -272,6 +277,25 @@ body::-webkit-scrollbar {
 
 .cell.static:hover {
   opacity: 1;
+}
+
+.cell.static.logo .cell-front img,
+.cell.static.logo .cell-back img {
+  max-width: 80%;
+  max-height: 60%;
+  object-fit: contain;
+}
+
+.cell.static.contact .contact-label,
+.cell.static.contact .contact-label-back,
+.cell.static.projects .projects-label,
+.cell.static.projects .projects-label-back,
+.cell.static.directory .directory-label,
+.cell.static.directory .directory-label-back {
+  color: white;
+  font-size: 0.75rem;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .logo .cell-front,
@@ -306,7 +330,7 @@ body::-webkit-scrollbar {
 
 /* Fade out animation for closing */
 .cell.fading .cell-inner {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.2s ease;
   opacity: 0;
 }
 
@@ -343,6 +367,28 @@ body::-webkit-scrollbar {
   pointer-events: none;
 }
 
+.directory-panel.open ~ .grid,
+.directory-panel.open + .black-overlay + .grid {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Override any conflicting styles for contact and projects tiles */
+.cell.contact .cell-back,
+.cell.projects .cell-back {
+  background-color: transparent !important;
+  background-image: none !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/* Ensure contact and projects tiles never get images */
+.cell.contact .cell-back,
+.cell.projects .cell-back {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
 .contact-header {
   margin-bottom: 0;
   text-align: center;
@@ -377,7 +423,16 @@ body::-webkit-scrollbar {
   object-fit: contain;
   z-index: 2;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.2s ease;
+}
+
+.sf-logo.clickable-logo {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.sf-logo.clickable-logo:hover {
+  opacity: 0.8;
 }
 
 @keyframes spin {
@@ -458,34 +513,89 @@ body::-webkit-scrollbar {
   text-decoration: underline;
 }
 
-/* Detail panel overlay */
-.detail-panel {
+/* Directory panel overlay */
+.directory-panel {
   position: fixed;
-  top: 20vh;
+  top: var(--tile-height); /* Use dynamic tile height */
   left: 0;
   width: 100vw;
-  height: 60vh;
+  height: calc(100vh - var(--tile-height)); /* Fill remaining screen height */
   background: black;
   z-index: 100;
+  padding: 40px;
   box-sizing: border-box;
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  display: flex;
+  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  color: white;
+  overflow: hidden;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.4s ease, visibility 0.4s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Portrait mode (9:16) - stack video and description vertically */
+.directory-panel.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.project-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.project-list::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.project-item {
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  padding-left: 20px;
+}
+
+.project-name {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0;
+  letter-spacing: 0.05em;
+}
+
+.project-description {
+  display: none;
+}
+
+/* Portrait mode (9:16) - overlay tiles 1 and 2, keep tile 0 visible */
 @media (aspect-ratio < 1) {
   .detail-panel {
+    position: absolute;
+    top: var(--tile-height); /* Start below SF logo tile */
+    left: 0;
+    width: 100vw;
+    height: calc(2 * var(--tile-height)); /* Cover tiles 1 and 2 */
+    background: black;
+    z-index: 100;
+    box-sizing: border-box;
+    font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    display: flex;
     flex-direction: column;
-    height: 80vh;
-    top: 10vh;
   }
   
   .detail-video {
     width: 100%;
-    height: 56.25vw; /* True 16:9 ratio: height = width * 9/16 */
+    height: var(--tile-height); /* Exactly 1 tile high (projects tile) */
     background-color: #000;
     position: relative;
     flex-shrink: 0; /* Prevent shrinking */
@@ -493,7 +603,7 @@ body::-webkit-scrollbar {
   
   .detail-info {
     width: 100%;
-    height: 56.25vw; /* True 16:9 ratio: height = width * 9/16 */
+    height: var(--tile-height); /* Exactly 1 tile high (contact tile) */
     padding: 15px;
     box-sizing: border-box;
     display: flex;
@@ -505,6 +615,32 @@ body::-webkit-scrollbar {
     flex-shrink: 0; /* Prevent shrinking */
     background: black;
     border-top: 1px solid white;
+  }
+  
+  .detail-panel.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Disable body scroll when video is open in phone mode */
+  .detail-panel.open ~ body,
+  body.detail-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Make the area above video black when open */
+  .detail-panel.open::before {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--tile-height));
+    left: 0;
+    width: 100%;
+    height: var(--tile-height);
+    background: black;
+    z-index: -1;
   }
   
   .detail-info::-webkit-scrollbar {
@@ -528,8 +664,24 @@ body::-webkit-scrollbar {
   }
 }
 
-/* Landscape mode (16:9) - video takes 3x3 tiles */
+/* Landscape and intermediate modes - align below top row */
 @media (aspect-ratio >= 1) {
+  .detail-panel {
+    position: fixed;
+    top: var(--tile-height); /* Use dynamic tile height */
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - var(--tile-height)); /* Fill remaining screen height */
+    background: black;
+    z-index: 100;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  
   .detail-video {
     width: calc(3 * (100vw / 5)); /* 3 tiles wide */
     height: calc(3 * (100vw / 5) * 0.5625); /* 3 tiles high (16:9) */
@@ -544,6 +696,13 @@ body::-webkit-scrollbar {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .detail-info::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -562,9 +721,14 @@ body::-webkit-scrollbar {
   color: white;
   cursor: pointer;
   z-index: 10;
-  line-height: 1;
-  padding: 5px 10px;
+  opacity: 0;
+  visibility: hidden;
   transition: opacity 0.2s ease;
+}
+
+.detail-panel.open .close-btn {
+  opacity: 1;
+  visibility: visible;
 }
 
 .close-btn:hover {

@@ -29,8 +29,48 @@ const imageFolders = [
   { path: 'Stills/RESPACE stills', count: 12, ext: 'jpg', contain: false, category: 'documentary', name: 'FEET ON THE GROUND, HEAD IN THE SKY', description: 'FEET ON THE GROUND, HEAD IN THE SKY is a documentary recording the connected lives of the residents of Silvertown, London and the diffusive effects of their hidden lives inside the walls of the Tate Institute - a former community hub reclaimed once more to its former glory after years of dereliction and neglect. Directed and Edited by Toby Paul Jones. Composed by Oskar Mikkelsen. Sound by Oskar Mikkelsen. Produced by SOMETHING FOUND.', vimeoId: '' },
   { path: 'Stills/SELFDESTRUCTIVE stills', count: 6, ext: 'jpg', contain: false, category: 'archive', name: 'SELFDESTRUCTIVE', description: '2018, 3 min. The looping sound tape degenerates as the atomic bomb danger is represented over and over in its self-destructive, dreadful yet sublime beauty. As the images echo pieces such as A Movie and The Atomic Café, the question arises: how can we protect ourselves from the naturalization process of the spectacularization of war? By exacerbating this visual phenomenon until we exorcise it? Directed by Leonardo Dal Bo. Sound Design Oskar Uhrskov Mikkelsen. Featured on Dogmilk Films.', vimeoId: '1134868223' },
   { path: 'Stills/SIGNALOGIA stills', count: 43, ext: 'jpg', contain: false, category: 'documentary', name: 'SIGNALOGIA', description: '2022 - on going, Italy, France, London, Mexico, site-specific artwork. Featured on Exibart. Through a painting-photography-video practice Signalogia infuses identity into anonymous spaces calling upon the inhabitants to re-identify themselves within the urban context. As the city margin expands, so does the prevalence of anonymous spaces. Signalogia proposes an inward expansion, highlighting new potentials within the already existing border of the metropolis. By bringing presence to otherwise invisible actors like air-inlets, silos, electrical junctions, they are made accomplices in the alternative city. Artwork by Leonardo Dal Bo. Curated by Oskar Uhrskov Mikkelsen.', vimeoId: '1133983165' },
-  { path: 'Stills/SUTURE stills', count: 70, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE', description: 'A documentary following surgical procedures and healing.', vimeoId: '1157528596' }
+  { path: 'Stills/SUTURE stills', count: 70, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE: staging the scars', description: 'Our skin is a surface. A surface which changes with time - the cracks on it are the indelible mark of happenings, of time imprinting itself on our bodies. As I age, cracks - their very essence as tactile evidence of lost (or found) time - have fascinated me. I am a person who ages, whose skin cracks as time moves forward. But as my skin cracks, it leaves a trace of the past in the present, a physical manifestation of living memory.\nA wall, like our skin, has a living memory. A sudden, intense blow can create a crack, or slowly a fracture can form as pieces tumble - but the living memory of those pieces remains - despite their absence, the trace of their presence lingers. Sutures allow our wounds to heal, for cracks to connect, but we will always wear the scars of time, and must not forget where they came from. \nIf a crack is a wound, how can we use them to help us heal the wounds of history? The question is not to look away from the cracks, but to find them, to remember them, and by remembering them, imagine alternative futures. \n\'Nothing is created, nothing is destroyed, everything is transformed\'. - Lavoisier\'s Law\nartwork by Leonardo Dal Bo\ncurated by Toby Paul Jones and Oskar Uhrskov\nexhibited Venice Arsenale\n2024', vimeoId: '1157528596' }
 ];
+
+// Handle iOS video autoplay
+function handleIOSVideoAutoplay() {
+  const video = document.querySelector('.bg-video');
+  
+  // Check if it's iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  
+  if (isIOS && video) {
+    // Try to play video on first user interaction
+    const playVideo = () => {
+      video.play().catch(error => {
+        console.log('iOS video autoplay prevented:', error);
+        // Fallback: hide video and show background color
+        video.style.display = 'none';
+        document.body.style.backgroundColor = '#000';
+      });
+    };
+    
+    // Try to play immediately
+    playVideo();
+    
+    // Also try on first touch/click
+    document.addEventListener('touchstart', playVideo, { once: true });
+    document.addEventListener('click', playVideo, { once: true });
+    
+    // Add a fallback in case video never plays
+    setTimeout(() => {
+      if (video.paused) {
+        video.style.display = 'none';
+        document.body.style.backgroundColor = '#000';
+      }
+    }, 3000);
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  handleIOSVideoAutoplay();
+});
 
 // Current tab state - always hybrid for content
 let currentTab = 'hybrid';
@@ -258,48 +298,282 @@ function switchTab(tab) {
       cell.classList.add('flipped');
     } else if (cellTab === 'contact') {
       cell.classList.remove('flipped');
+    } else if (cellTab === 'projects' && tab === 'projects') {
+      cell.classList.add('flipped');
+    } else if (cellTab === 'projects') {
+      cell.classList.remove('flipped');
     }
   });
+  
+  // Handle toggle functionality for Contact and Projects
+  if (tab === 'projects') {
+    // Direct switch - close contact immediately if open
+    const contactPanel = document.getElementById('contactPanel');
+    if (contactPanel && contactPanel.classList.contains('open')) {
+      contactPanel.classList.remove('open');
+    }
+    // Set currentTab and refresh immediately
+    currentTab = 'projects';
+    refreshContentTiles();
+  } else if (tab === 'contact') {
+    // Direct switch - close projects immediately if open
+    const projectsPanel = document.getElementById('projectsPanel');
+    if (projectsPanel && projectsPanel.classList.contains('open')) {
+      projectsPanel.classList.remove('open');
+    }
+    // Set currentTab and refresh immediately
+    currentTab = 'contact';
+    refreshContentTiles();
+  } else {
+    hideProjectsPage();
+  }
   
   // Refresh content tiles
   refreshContentTiles();
 }
 
-// Global reference to strip elements
-let currentStrip = null;
-let currentTopBorder = null;
+function showProjectsPage() {
+  // Fade black overlay in for projects page
+  const blackOverlay = document.getElementById('blackOverlay');
+  console.log('Projects: Black overlay element:', blackOverlay);
+  console.log('Projects: Black overlay current opacity:', blackOverlay.style.opacity);
+  blackOverlay.style.opacity = '1';
+  console.log('Projects: Black overlay after setting opacity:', blackOverlay.style.opacity);
+  
+  // Hide content rows (rows 1-3) but keep top row visible
+  const cells = document.querySelectorAll('.cell');
+  console.log('Projects: Total cells found:', cells.length);
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row >= 1 && row <= 3) {
+      cell.classList.add('grid-hidden');
+    }
+  });
+  console.log('Projects: Added grid-hidden to rows 1-3');
+  
+  // Skip animations when switching - show panel immediately
+  const projectsPanel = document.getElementById('projectsPanel');
+  if (!projectsPanel) {
+    const newProjectsPanel = document.createElement('div');
+    newProjectsPanel.id = 'projectsPanel';
+    newProjectsPanel.className = 'contact-panel';
+    document.body.appendChild(newProjectsPanel);
+    console.log('Projects: Created new projects panel');
+  }
+  
+  // Populate projects with project list
+  const projectList = document.createElement('div');
+  projectList.className = 'project-list';
+  
+  imageFolders.forEach((folder, index) => {
+    const projectItem = document.createElement('div');
+    projectItem.className = 'project-item';
+    projectItem.innerHTML = `
+      <div class="project-name">${folder.name}</div>
+    `;
+    
+    projectItem.addEventListener('click', () => {
+      hideProjectsPage();
+      openDetailView('', index);
+    });
+    
+    projectList.appendChild(projectItem);
+  });
+  
+  const panel = document.getElementById('projectsPanel');
+  panel.innerHTML = '';
+  panel.appendChild(projectList);
+  
+  // Show panel immediately - no animations
+  panel.classList.add('open');
+  console.log('Projects: Added open class to projects panel');
+  
+  // Set tile states directly without animation
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols);
+    if (row >= 1 && row <= 3) {
+      cell.classList.add('flipped');
+      cell.querySelector('.cell-back').classList.add('contact-back');
+    } else if (row === 0) {
+      const back = cell.querySelector('.cell-back');
+      back.style.backgroundImage = 'none';
+      back.style.backgroundColor = 'black';
+      if (cell.classList.contains('projects')) {
+        back.style.backgroundColor = 'black';
+        back.style.backgroundImage = 'none';
+        back.style.backgroundSize = 'cover';
+        back.style.backgroundPosition = 'center';
+        back.classList.remove('contact-back');
+      } else if (cell.classList.contains('logo')) {
+        back.style.backgroundColor = 'black';
+        back.style.backgroundImage = 'none';
+        back.style.backgroundSize = 'cover';
+        back.style.backgroundPosition = 'center';
+      }
+    }
+  });
+}
+
+function hideProjectsPage() {
+  const projectsPanel = document.getElementById('projectsPanel');
+  if (projectsPanel) {
+    projectsPanel.classList.remove('open');
+  }
+  
+  // Fade black overlay out
+  const blackOverlay = document.getElementById('blackOverlay');
+  blackOverlay.style.opacity = '0';
+  
+  // Restore content rows like contact page
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => cell.classList.remove('grid-hidden'));
+  
+  // Pre-generate all new images like contact page
+  const newImages = [];
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 0) return;
+    newImages[i] = getRandomImage();
+  });
+  
+  // Disable tile transitions before panel fades like contact page
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 0) return;
+    cell.style.transition = 'none';
+    cell.querySelector('.cell-inner').style.transition = 'none';
+  });
+  
+  // Force reflow
+  void document.body.offsetHeight;
+  
+  // Reset all tiles instantly (while panel still covers them) like contact page
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 0) return;
+    
+    cell.classList.remove('contact-flip');
+    cell.classList.remove('detail-bottom');
+    cell.classList.remove('animating');
+    cell.classList.remove('flipped');
+    cell.classList.remove('fading');
+    
+    const back = cell.querySelector('.cell-back');
+    back.classList.remove('contact-back');
+    
+    // Load new image onto back
+    if (newImages[i]) {
+      back.style.backgroundImage = `url('${newImages[i].url}')`;
+      cell.dataset.folderIndex = newImages[i].folderIndex;
+      cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name; // Add project name
+      if (newImages[i].contain) {
+        back.classList.add('contain');
+      } else {
+        back.classList.remove('contain');
+      }
+    }
+  });
+  
+  // Force reflow then re-enable transitions
+  void document.body.offsetHeight;
+  
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / 5);
+    if (row === 0) return;
+    cell.style.transition = '';
+    cell.querySelector('.cell-inner').style.transition = '';
+  });
+  
+  // Auto-flip one random tile after panel fades like contact page
+  setTimeout(() => {
+    const contentCells = Array.from(cells).filter((c, i) => {
+      const row = Math.floor(i / 5);
+      return row > 0 && !c.classList.contains('flipped');
+    });
+    if (contentCells.length > 0) {
+      const randomCell = contentCells[Math.floor(Math.random() * contentCells.length)];
+      randomCell.classList.add('flipped');
+    }
+  }, 200);
+}
+
+// Global reference to strip elements - REMOVED
+// let currentStrip = null;
+// let currentTopBorder = null;
 
 function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = []) {
   // Remove existing strip if any
   removeContinuousStrip();
   
+  // Check if we're in portrait mode
+  const config = getGridConfig();
+  const isPortrait = config.needsScrolling;
+  
+  // Calculate tile height to match grid
+  const tileWidth = window.innerWidth / config.cols;
+  const tileHeight = tileWidth * (9/16); // 16:9 aspect ratio
+  
   // Create strip container
   currentStrip = document.createElement('div');
-  currentStrip.style.cssText = `
-    position: fixed;
-    bottom: 0;
-    left: -2px;
-    width: calc(100% + 2px);
-    height: 20vh;
-    display: flex;
-    transition: transform 0.1s ease-out;
-    cursor: grab;
-    z-index: 100;
-    box-sizing: border-box;
-  `;
+  
+  if (isPortrait) {
+    // Portrait mode: use tile height for strip height
+    currentStrip.style.cssText = `
+      position: fixed;
+      bottom: 0;
+      left: -2px;
+      width: calc(100% + 2px);
+      height: ${tileHeight}px;
+      display: flex;
+      transition: transform 0.1s ease-out;
+      cursor: grab;
+      z-index: 100;
+      box-sizing: border-box;
+    `;
+  } else {
+    // Landscape mode: original positioning
+    currentStrip.style.cssText = `
+      position: fixed;
+      bottom: 0;
+      left: -2px;
+      width: calc(100% + 2px);
+      height: 20vh;
+      display: flex;
+      transition: transform 0.1s ease-out;
+      cursor: grab;
+      z-index: 100;
+      box-sizing: border-box;
+    `;
+  }
   
   // Create top border
   currentTopBorder = document.createElement('div');
-  currentTopBorder.style.cssText = `
-    position: fixed;
-    bottom: 20vh;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: white;
-    z-index: 1000;
-    pointer-events: none;
-  `;
+  
+  if (isPortrait) {
+    // Portrait mode: position at top of strip (tile height from bottom)
+    currentTopBorder.style.cssText = `
+      position: fixed;
+      bottom: ${tileHeight}px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: white;
+      z-index: 1000;
+      pointer-events: none;
+    `;
+  } else {
+    // Landscape mode: original positioning
+    currentTopBorder.style.cssText = `
+      position: fixed;
+      bottom: 20vh;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: white;
+      z-index: 1000;
+      pointer-events: none;
+    `;
+  }
   
   // Track which images we've used for each project
   const usedProjectImages = {};
@@ -691,22 +965,7 @@ function removeContinuousStrip() {
     currentTopBorder = null;
   }
   
-  // Show original bottom row
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / 5);
-    if (row === 4) {
-      cell.style.visibility = 'visible';
-      const back = cell.querySelector('.cell-back');
-      const newImage = getRandomImage();
-      if (newImage) {
-        back.style.backgroundImage = `url('${newImage.url}')`;
-        cell.dataset.folderIndex = newImage.folderIndex;
-        cell.dataset.projectName = imageFolders[newImage.folderIndex].name; // Add project name
-        applyBackgroundSizing(back, newImage.folderIndex);
-      }
-    }
-  });
+  // Don't touch bottom row - leave it as is
 }
 
 function closeDetailView() {
@@ -720,31 +979,40 @@ function closeDetailView() {
     detailPanel.cleanupGallery = null;
   }
   
-  detailView = null;
-  const grid = document.querySelector('.grid');
-  const cells = grid.querySelectorAll('.cell');
-  
   // Clear video immediately to stop playback
   detailPanel.querySelector('.detail-video').innerHTML = '';
-  
-  // Remove continuous strip and restore bottom row
-  removeContinuousStrip();
   
   // Get current grid configuration for proper row calculation
   const config = getGridConfig();
   
-  // Pre-generate all new images to restore tile backgrounds
+  // Re-enable scroll in phone mode when video closes
+  if (config.cols === 1) {
+    document.body.classList.remove('detail-open');
+  }
+  
+  // Pre-generate all new images to restore tile backgrounds - NEVER for top row
   const newImages = [];
+  const cells = document.querySelector('.grid').querySelectorAll('.cell');
+  
   cells.forEach((cell, i) => {
     const row = Math.floor(i / config.cols);
-    if (row === 0) return; // Skip top row
-    newImages[i] = getRandomImage();
+    // NEVER generate images for top row (row 0) - this prevents pictures in top row
+    if (row === 0) {
+      newImages[i] = null;
+      return;
+    }
+    // Generate images only for non-top-row cells
+    if (cell.classList.contains('logo')) {
+      newImages[i] = null; // Logo cell has no background image
+    } else {
+      newImages[i] = getRandomImage();
+    }
   });
   
-  // Restore grid borders and images for middle rows
+  // Restore all grid rows except top row - NEVER touch top row
   cells.forEach((cell, i) => {
     const row = Math.floor(i / config.cols);
-    if (row >= 1 && row <= 3) {
+    if (row >= 1) {  // Restore all rows except top row
       cell.classList.remove('grid-hidden');
       cell.classList.remove('animating');
       cell.classList.remove('contact-flip');
@@ -766,6 +1034,7 @@ function closeDetailView() {
         }
       }
     }
+    // NEVER touch top row (row === 0) - leave it completely alone
   });
   
   // Now fade out the panel (tiles already reset underneath)
@@ -779,6 +1048,8 @@ function closeDetailView() {
   setTimeout(() => {
     blackOverlay.style.opacity = '0';
   }, 200);
+  
+  detailView = null;
 }
 
 function createPictureViewer(container, folder) {
@@ -916,13 +1187,18 @@ function openDetailView(imageUrl, folderIndex) {
   const detailPanel = document.getElementById('detailPanel');
   const folder = imageFolders[folderIndex];
   
+  // Disable scroll in phone mode when video opens
+  const config = getGridConfig();
+  if (config.cols === 1) {
+    document.body.classList.add('detail-open');
+  }
+  
   // Fade black overlay in for fade-to-black effect
   const blackOverlay = document.getElementById('blackOverlay');
   blackOverlay.style.opacity = '1';
   
-  // Hide grid borders for middle rows only
+  // Hide content rows (rows 1-3) but keep top row visible like contact page
   const cells = document.querySelectorAll('.cell');
-  const config = getGridConfig();
   cells.forEach((cell, i) => {
     const row = Math.floor(i / config.cols);
     if (row >= 1 && row <= 3) {
@@ -976,25 +1252,6 @@ function openDetailView(imageUrl, folderIndex) {
         }
       });
       
-      // Update bottom row
-      cells.forEach((cell, i) => {
-        const row = Math.floor(i / config.cols);
-        const col = i % config.cols;
-        if (row === config.rows - 1) {
-          cell.classList.add('detail-bottom');
-          const back = cell.querySelector('.cell-back');
-          const targetProject = allProjectsOrdered[col % allProjectsOrdered.length];
-          const img = getUniqueRandomImage(targetProject.index);
-          
-          back.style.backgroundImage = `url('${img.url}')`;
-          cell.dataset.folderIndex = img.folderIndex;
-          cell.dataset.projectName = targetProject.name;
-          
-          applyBackgroundSizing(back, img.folderIndex);
-          cell.classList.add('flipped');
-        }
-      });
-      
       setTimeout(() => {
         cells.forEach((cell, i) => {
           const row = Math.floor(i / config.cols);
@@ -1003,9 +1260,6 @@ function openDetailView(imageUrl, folderIndex) {
           }
         });
         detailPanel.classList.add('open');
-        
-        // Create continuous strip
-        createContinuousStrip(allProjectsOrdered, capturedBottomRowImages);
         
         // Load content after panel is visible
         setTimeout(() => {
@@ -1039,6 +1293,8 @@ function refreshContentTiles() {
   const cells = grid.querySelectorAll('.cell');
   const contactPanel = document.getElementById('contactPanel');
   const detailPanel = document.getElementById('detailPanel');
+  const directoryPanel = document.getElementById('directoryPanel');
+  const config = getGridConfig(); // Use dynamic config
   
   // Close detail view if open
   if (detailView) {
@@ -1046,19 +1302,29 @@ function refreshContentTiles() {
     detailPanel.classList.remove('open');
   }
   
+  // Close directory if open
+  if (directoryPanel && directoryPanel.classList.contains('open')) {
+    directoryPanel.classList.remove('open');
+  }
+  
   if (currentTab === 'contact') {
     // Fade black overlay in for contact page
     const blackOverlay = document.getElementById('blackOverlay');
     blackOverlay.style.opacity = '1';
     
-    // Hide grid borders
-    cells.forEach(cell => cell.classList.add('grid-hidden'));
+    // Hide content rows (rows 1-3) but keep top row visible
+    cells.forEach((cell, i) => {
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      if (row >= 1 && row <= 3) {
+        cell.classList.add('grid-hidden');
+      }
+    });
     
     // Use requestAnimationFrame for smooth animation
     requestAnimationFrame(() => {
       // Clear images and mark animating for middle rows (1-3)
       cells.forEach((cell, i) => {
-        const row = Math.floor(i / 5);
+        const row = Math.floor(i / config.cols); // Use dynamic config
         if (row >= 1 && row <= 3) {
           cell.classList.add('animating');
           const back = cell.querySelector('.cell-back');
@@ -1069,46 +1335,160 @@ function refreshContentTiles() {
       // Flip middle rows to white, unflip bottom row to show video
       requestAnimationFrame(() => {
         cells.forEach((cell, i) => {
-          const row = Math.floor(i / 5);
+          const row = Math.floor(i / config.cols); // Use dynamic config
           if (row >= 1 && row <= 3) {
             cell.classList.add('contact-flip');
             cell.querySelector('.cell-back').classList.add('contact-back');
             cell.classList.add('flipped');
-          } else if (row === 4) {
+          } else if (row === config.rows - 1) { // Use dynamic config
             // Bottom row - unflip to show transparent front (video background)
             cell.classList.remove('flipped');
+          }
+        });
+        
+        // Clear top row backgrounds to prevent background video showing
+        cells.forEach((cell, i) => {
+          const row = Math.floor(i / config.cols);
+          if (row === 0) {
+            const back = cell.querySelector('.cell-back');
+            back.style.backgroundImage = 'none';
+            back.style.backgroundColor = 'black'; // Always black for top row
+            // SPECIFICALLY FIX CONTACT TILE BLACK BACKGROUND
+            if (cell.classList.contains('contact')) {
+              back.style.backgroundColor = 'black';
+              back.style.backgroundImage = 'none';
+              // Ensure no other background properties
+              back.style.backgroundSize = 'cover';
+              back.style.backgroundPosition = 'center';
+              // Override any contact-back class styles
+              back.classList.remove('contact-back');
+            }
           }
         });
         
         // Show panel after flip completes
         setTimeout(() => {
           cells.forEach((cell, i) => {
-            const row = Math.floor(i / 5);
+            const row = Math.floor(i / config.cols); // Use dynamic config
             if (row >= 1 && row <= 3) {
               cell.classList.remove('animating');
             }
           });
           contactPanel.classList.add('open');
+        }, 50);  // Reduced to 50ms for instant response
+      });
+    });
+  } else if (currentTab === 'projects') {
+    // Fade black overlay in for projects page (same as contact)
+    const blackOverlay = document.getElementById('blackOverlay');
+    blackOverlay.style.opacity = '1';
+    
+    // Hide content rows (rows 1-3) but keep top row visible
+    cells.forEach((cell, i) => {
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      if (row >= 1 && row <= 3) {
+        cell.classList.add('grid-hidden');
+      }
+    });
+    
+    // Use requestAnimationFrame for smooth animation
+    requestAnimationFrame(() => {
+      // Clear images and mark animating for middle rows (1-3)
+      cells.forEach((cell, i) => {
+        const row = Math.floor(i / config.cols); // Use dynamic config
+        if (row >= 1 && row <= 3) {
+          cell.classList.add('animating');
+          const back = cell.querySelector('.cell-back');
+          back.style.backgroundImage = 'none';
+        }
+      });
+      
+      // Flip middle rows to white, unflip bottom row to show video
+      requestAnimationFrame(() => {
+        cells.forEach((cell, i) => {
+          const row = Math.floor(i / config.cols); // Use dynamic config
+          if (row >= 1 && row <= 3) {
+            cell.classList.add('contact-flip');
+            cell.querySelector('.cell-back').classList.add('contact-back');
+            cell.classList.add('flipped');
+          } else if (row === config.rows - 1) { // Use dynamic config
+            // Bottom row - unflip to show transparent front (video background)
+            cell.classList.remove('flipped');
+            // Clear bottom row background to prevent black tiles
+            const back = cell.querySelector('.cell-back');
+            back.style.backgroundImage = 'none';
+            back.style.backgroundColor = 'transparent';
+          }
+        });
+        
+        // Show projects panel after flip completes
+        setTimeout(() => {
+          cells.forEach((cell, i) => {
+            const row = Math.floor(i / config.cols); // Use dynamic config
+            if (row >= 1 && row <= 3) {
+              cell.classList.remove('animating');
+            }
+          });
+          
+          // Create or show projects panel
+          let projectsPanel = document.getElementById('projectsPanel');
+          if (!projectsPanel) {
+            projectsPanel = document.createElement('div');
+            projectsPanel.id = 'projectsPanel';
+            projectsPanel.className = 'contact-panel'; // Use contact-panel styling
+            document.body.appendChild(projectsPanel);
+          }
+          
+          // Populate projects with project list
+          const projectList = document.createElement('div');
+          projectList.className = 'project-list';
+          
+          imageFolders.forEach((folder, index) => {
+            const projectItem = document.createElement('div');
+            projectItem.className = 'project-item';
+            projectItem.innerHTML = `
+              <div class="project-name">${folder.name}</div>
+              <div class="project-description">${folder.description}</div>
+            `;
+            
+            projectItem.addEventListener('click', () => {
+              switchTab('hybrid');
+              openDetailView('', index);
+            });
+            
+            projectList.appendChild(projectItem);
+          });
+          
+          projectsPanel.innerHTML = '';
+          projectsPanel.appendChild(projectList);
+          
+          // Show panel
+          projectsPanel.classList.add('open');
         }, 500);
       });
     });
+  } else if (currentTab === 'projects') {
+    // This should never happen, but handle it
+    hideProjectsPage();
   } else {
-    // Fade black overlay out and restore grid when leaving contact page
+    // Fade black overlay out and restore grid when leaving contact/projects pages
     const blackOverlay = document.getElementById('blackOverlay');
     blackOverlay.style.opacity = '0';
     cells.forEach(cell => cell.classList.remove('grid-hidden'));
     
-    // Pre-generate all new images
+    // Pre-generate all new images - NEVER for top row
     const newImages = [];
     cells.forEach((cell, i) => {
-      const row = Math.floor(i / 5);
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      // NEVER generate images for top row (row 0) to prevent pictures in top row
       if (row === 0) return;
       newImages[i] = getRandomImage();
     });
     
-    // Disable tile transitions before panel fades
+    // Disable tile transitions before panel fades - NEVER for top row
     cells.forEach((cell, i) => {
-      const row = Math.floor(i / 5);
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      // Don't touch top row transitions
       if (row === 0) return;
       cell.style.transition = 'none';
       cell.querySelector('.cell-inner').style.transition = 'none';
@@ -1117,9 +1497,10 @@ function refreshContentTiles() {
     // Force reflow
     void document.body.offsetHeight;
     
-    // Reset all tiles instantly (while panel still covers them)
+    // Reset all tiles instantly (while panel still covers them) - NEVER for top row
     cells.forEach((cell, i) => {
-      const row = Math.floor(i / 5);
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      // Don't touch top row tiles
       if (row === 0) return;
       
       cell.classList.remove('contact-flip');
@@ -1144,27 +1525,38 @@ function refreshContentTiles() {
       }
     });
     
-    // Force reflow then re-enable transitions
+    // Force reflow then re-enable transitions - NEVER for top row
     void document.body.offsetHeight;
     
     cells.forEach((cell, i) => {
-      const row = Math.floor(i / 5);
+      const row = Math.floor(i / config.cols); // Use dynamic config
+      // Don't touch top row transitions
       if (row === 0) return;
       cell.style.transition = '';
       cell.querySelector('.cell-inner').style.transition = '';
     });
     
     // Now fade out the panel (tiles already reset underneath)
-    contactPanel.classList.remove('open');
+    if (currentTab === 'contact') {
+      contactPanel.classList.remove('open');
+    } else if (currentTab === 'projects') {
+      const projectsPanel = document.getElementById('projectsPanel');
+      if (projectsPanel) {
+        projectsPanel.classList.remove('open');
+      }
+    }
     
-    // Auto-flip one random tile after panel fades
+    // Auto-flip one random tile after panel fades - NEVER for top row
     setTimeout(() => {
-      const contentCells = Array.from(cells).filter((c, i) => Math.floor(i / 5) > 0 && !c.classList.contains('flipped'));
+      const contentCells = Array.from(cells).filter((c, i) => {
+        const row = Math.floor(i / config.cols); // Use dynamic config
+        return row > 0 && !c.classList.contains('flipped');
+      });
       if (contentCells.length > 0) {
         const randomCell = contentCells[Math.floor(Math.random() * contentCells.length)];
         randomCell.classList.add('flipped');
       }
-    }, 450);
+    }, 200);
   }
 }
 
@@ -1174,44 +1566,56 @@ function getGridConfig() {
   const height = window.innerHeight;
   const aspectRatio = width / height;
   
-  // Calculate 16:9 tile dimensions based on original 5x5 layout
-  const baseTileWidth = width / 5; // Original 5-column width
-  const baseTileHeight = baseTileWidth * (9/16); // 16:9 aspect ratio
-  const tilesThatFitVertically = Math.floor(height / baseTileHeight);
-  
-  // Keep 16:9 tile format, adjust visible rows based on screen
+  // Determine columns based on screen width and aspect ratio
   let cols, rows;
   
-  if (aspectRatio >= 1.7) {
+  if (aspectRatio < 1) {
+    // Portrait mode (phones) - always 1 column with scrolling
+    cols = 1;
+    rows = 25; // More rows for scrolling
+  } else if (width >= 1200) {
     // Very wide screens - 5x5 = 25 tiles
     cols = 5;
     rows = 5;
-  } else if (aspectRatio >= 1.4) {
-    // Wide landscape - 4x6 = 24 tiles
+  } else if (width >= 900) {
+    // Wide screens - 4x6 = 24 tiles
     cols = 4;
     rows = 6;
-  } else if (aspectRatio >= 1.1) {
-    // Mild landscape - 3x8 = 24 tiles
+  } else if (width >= 600) {
+    // Medium screens - 3x8 = 24 tiles
     cols = 3;
     rows = 8;
-  } else if (aspectRatio >= 0.7) {
-    // Near square/mild portrait - 2x12 = 24 tiles
+  } else if (width >= 400) {
+    // Small screens - 2x12 = 24 tiles
     cols = 2;
     rows = 12;
   } else {
-    // Portrait/vertical (9:16 and narrower) - 1x5 tiles visible, maintain 16:9 tile height
+    // Very small screens (landscape phones) - 1 column
     cols = 1;
-    rows = Math.min(5, tilesThatFitVertically); // Show max 5 rows based on 16:9 tile height
+    rows = 25;
   }
+  
+  // Check if scrolling is needed (portrait mode)
+  const needsScrolling = cols === 1;
+  
+  // Set logo position (always first tile)
+  const logoPosition = 0;
+  
+  // In phone mode, we need to ensure projects and contact are in positions 1 and 2
+  // In desktop mode, they remain in their horizontal positions
+  const projectsPosition = cols === 1 ? 1 : 1;
+  const contactPosition = cols === 1 ? 2 : 2;
   
   return { 
     cols: cols, 
     rows: rows, 
     totalCells: cols * rows,
     bottomRowCells: 0,
-    logoPosition: Math.floor(cols / 2),
-    needsScrolling: aspectRatio < 0.7, // Enable scrolling for portrait
-    tileHeight: baseTileHeight // Maintain original 16:9 tile height
+    needsScrolling: needsScrolling,
+    logoPosition: logoPosition,
+    contactPosition: contactPosition,
+    projectsPosition: projectsPosition,
+    directoryPosition: null // Removed
   };
 }
 
@@ -1220,29 +1624,31 @@ function updateGridCSS() {
   const config = getGridConfig();
   const grid = document.querySelector('.grid');
   
+  // Set CSS variable for dynamic alignment
+  document.documentElement.style.setProperty('--grid-cols', config.cols);
+  
+  // Calculate actual tile height for precise alignment
+  const availableHeight = window.innerHeight;
+  const rowsNeeded = config.rows;
+  const tileHeight = availableHeight / rowsNeeded;
+  
+  // Set CSS variable for tile height
+  document.documentElement.style.setProperty('--tile-height', `${tileHeight}px`);
+  
   grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
   
-  // Always use proper 16:9 height for all layouts
-  const tileWidth = window.innerWidth / config.cols; // Full width divided by columns
-  const idealTileHeight = tileWidth * (9/16); // Perfect 16:9 aspect ratio
-  
   if (config.needsScrolling) {
-    // Portrait mode: 25 rows with scrolling
-    grid.style.gridTemplateRows = `repeat(25, ${idealTileHeight}px)`;
+    // Portrait mode: use exact 16:9 tile height and enable scrolling
+    const tileWidth = window.innerWidth / config.cols;
+    const portraitTileHeight = tileWidth * (9/16); // Exact 16:9 aspect ratio
+    grid.style.gridTemplateRows = `repeat(25, ${portraitTileHeight}px)`;
     grid.classList.add('scrollable');
+    
+    // Update tile height for portrait mode
+    document.documentElement.style.setProperty('--tile-height', `${portraitTileHeight}px`);
   } else {
-    // All other modes: adjust tile height but limit the adjustment
-    const availableHeight = window.innerHeight;
-    const rowsNeeded = config.rows;
-    const maxTileHeight = idealTileHeight * 1.2; // Allow max 20% taller than 16:9
-    const minTileHeight = idealTileHeight * 0.8; // Allow max 20% shorter than 16:9
-    
-    let adjustedTileHeight = availableHeight / rowsNeeded;
-    
-    // Limit the adjustment to stay close to 16:9
-    adjustedTileHeight = Math.max(minTileHeight, Math.min(maxTileHeight, adjustedTileHeight));
-    
-    grid.style.gridTemplateRows = `repeat(${rowsNeeded}, ${adjustedTileHeight}px)`;
+    // All other modes: scale tiles to fill screen height
+    grid.style.gridTemplateRows = `repeat(${rowsNeeded}, ${tileHeight}px)`;
     grid.classList.remove('scrollable');
   }
 }
@@ -1279,7 +1685,7 @@ function setupGrid() {
       cell.classList.add('edge-left');
     }
     
-    if (isTopRow) {
+    if (isTopRow || (config.cols === 1 && i < 3)) {
       cell.classList.add('static');
     }
     
@@ -1292,27 +1698,59 @@ function setupGrid() {
     const back = document.createElement('div');
     back.className = 'cell-back';
     
-    // Handle top row navigation (only for the first row)
-    if (isTopRow) {
-      if (col === config.logoPosition) {
+    // Handle top row navigation (only for the first row in desktop, first 3 tiles in phone)
+    const isNavigationTile = config.cols === 1 ? (i < 3) : isTopRow;
+    
+    if (isNavigationTile) {
+      const cellIndex = i;
+      
+      if (cellIndex === config.logoPosition) {
         cell.classList.add('logo');
-        cell.dataset.tab = 'contact';
+        cell.dataset.tab = 'logo';
         
         // Front side
         const logoImg = document.createElement('img');
         logoImg.src = 'SF Logo.png';
         logoImg.alt = 'SOMETHING FOUND';
         front.appendChild(logoImg);
-        const contactLabel = document.createElement('span');
-        contactLabel.className = 'contact-label';
-        contactLabel.textContent = 'Contact';
-        front.appendChild(contactLabel);
         
         // Back side (when active)
         const logoImgBack = document.createElement('img');
         logoImgBack.src = 'SF Logo.png';
         logoImgBack.alt = 'SOMETHING FOUND';
         back.appendChild(logoImgBack);
+        
+        // Make logo cell clickable to return to homepage
+        cell.style.pointerEvents = 'auto';
+        cell.addEventListener('click', returnToHomepage);
+      } else if (cellIndex === config.projectsPosition) {
+        cell.classList.add('projects');
+        cell.dataset.tab = 'projects';
+        
+        // Front side
+        const projectsLabel = document.createElement('span');
+        projectsLabel.className = 'projects-label';
+        projectsLabel.textContent = 'Projects';
+        front.appendChild(projectsLabel);
+        
+        // Back side (when active)
+        const projectsLabelBack = document.createElement('span');
+        projectsLabelBack.className = 'projects-label';
+        projectsLabelBack.textContent = 'Projects';
+        back.appendChild(projectsLabelBack);
+        
+        cell.addEventListener('click', () => switchTab('projects'));
+      } else if (cellIndex === config.contactPosition) {
+        cell.classList.add('contact');
+        cell.dataset.tab = 'contact';
+        
+        // Front side
+        const contactLabel = document.createElement('span');
+        contactLabel.className = 'contact-label';
+        contactLabel.textContent = 'Contact';
+        front.appendChild(contactLabel);
+        
+        // Back side (when active)
         const contactLabelBack = document.createElement('span');
         contactLabelBack.className = 'contact-label';
         contactLabelBack.textContent = 'Contact';
@@ -1381,7 +1819,7 @@ function setupGrid() {
       const randomCell = contentCells[Math.floor(Math.random() * contentCells.length)];
       randomCell.classList.add('flipped');
     }
-  }, 450);
+  }, 200);
 }
 
 // Handle window resize
@@ -1390,8 +1828,127 @@ window.addEventListener('resize', () => {
 });
 
 // Close buttons
-document.getElementById('detailCloseBtn').addEventListener('click', closeDetailView);
-document.getElementById('contactCloseBtn').addEventListener('click', () => switchTab(previousTab));
+document.getElementById('detailCloseBtn').addEventListener('click', () => {
+  closeDetailView();
+  switchTab('projects');
+});
+
+// Universal homepage return function
+function returnToHomepage() {
+  // Get all panels
+  const contactPanel = document.getElementById('contactPanel');
+  const detailPanel = document.getElementById('detailPanel');
+  const projectsPanel = document.getElementById('projectsPanel');
+  const grid = document.querySelector('.grid');
+  const blackOverlay = document.getElementById('blackOverlay');
+  
+  // Reset currentTab FIRST to prevent detection issues
+  currentTab = 'hybrid';
+  
+  // Force remove panel classes FIRST to trigger CSS changes
+  if (contactPanel) {
+    contactPanel.classList.remove('open');
+  }
+  
+  if (projectsPanel) {
+    projectsPanel.classList.remove('open');
+  }
+  
+  if (detailPanel && detailPanel.classList.contains('open')) {
+    closeDetailView();
+  }
+  
+  // Add explicit grid visible class to override CSS
+  grid.classList.add('grid-visible');
+  
+  // Fade black overlay out properly (don't remove it completely)
+  blackOverlay.style.opacity = '0';
+  blackOverlay.style.visibility = 'visible';
+  blackOverlay.style.display = 'block';
+  
+  // Restore grid visibility
+  const cells = document.querySelectorAll('.cell');
+  const config = getGridConfig(); // Use dynamic config
+  cells.forEach(cell => cell.classList.remove('grid-hidden'));
+  
+  // Only generate images for non-top-row cells - NEVER for top row
+  const newImages = [];
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols); // Use dynamic config
+    // Don't touch top row (row 0) to prevent pictures in top row
+    if (row === 0) return;
+    newImages[i] = getRandomImage();
+  });
+  
+  // Only update non-top-row cells - NEVER for top row
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols); // Use dynamic config
+    // Don't touch top row cells
+    if (row === 0) return;
+    
+    cell.classList.remove('contact-flip');
+    cell.classList.remove('detail-bottom');
+    cell.classList.remove('animating');
+    cell.classList.remove('flipped');
+    cell.classList.remove('fading');
+    
+    const back = cell.querySelector('.cell-back');
+    back.classList.remove('contact-back');
+    
+    // Load new image onto back
+    if (newImages[i]) {
+      back.style.backgroundImage = `url('${newImages[i].url}')`;
+      cell.dataset.folderIndex = newImages[i].folderIndex;
+      cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name;
+      if (newImages[i].contain) {
+        back.classList.add('contain');
+      } else {
+        back.classList.remove('contain');
+      }
+    }
+  });
+  
+  // SPECIFICALLY CLEAN UP TOP ROW TILES TO FIX BLACK TILE ISSUE
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols);
+    if (row === 0) {
+      const back = cell.querySelector('.cell-back');
+      // Remove any contact-back classes that might be causing black tiles
+      back.classList.remove('contact-back');
+      // Remove flipped class to eliminate white overlay
+      cell.classList.remove('flipped');
+      // Ensure transparent background for top row tiles - no black rectangles
+      if (cell.classList.contains('contact')) {
+        back.style.backgroundColor = 'transparent';
+        back.style.backgroundImage = 'none';
+      } else if (cell.classList.contains('projects')) {
+        back.style.backgroundColor = 'transparent';
+        back.style.backgroundImage = 'none';
+      }
+    }
+  });
+  
+  // Remove grid-visible class after a delay to ensure it stays visible
+  setTimeout(() => {
+    grid.classList.remove('grid-visible');
+  }, 1000);
+}
+
+// Update top row logo to be clickable
+document.addEventListener('DOMContentLoaded', () => {
+  const logoCell = document.querySelector('.cell.logo');
+  if (logoCell) {
+    logoCell.addEventListener('click', returnToHomepage);
+  }
+});
+
+// Add click event to SF logo in contact panel to return to homepage
+document.addEventListener('DOMContentLoaded', () => {
+  const contactLogo = document.querySelector('.sf-logo.clickable-logo');
+  if (contactLogo) {
+    contactLogo.addEventListener('click', returnToHomepage);
+  }
+});
 
 // Poisson-distributed random clicks
 function poissonInterval(lambda) {
