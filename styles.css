@@ -118,6 +118,69 @@ body::-webkit-scrollbar {
   z-index: 2; /* Above black overlay */
 }
 
+/* Remove ONLY white borders in phone mode - AGGRESSIVE SPECIFIC OVERRIDE */
+@media (max-width: 768px) {
+  /* Remove borders from ALL elements that could have them */
+  .cell,
+  .cell *,
+  .cell::before,
+  .cell::after,
+  .cell-front,
+  .cell-back,
+  .cell-inner,
+  .cell.edge-top,
+  .cell.edge-left,
+  .cell.grid-hidden,
+  .cell.contact-flip,
+  .cell.blank,
+  .grid,
+  .grid * {
+    border: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Remove white background overlay from cells */
+  .cell::before {
+    background: none !important;
+    opacity: 0 !important;
+  }
+  
+  /* Remove white line from detail video */
+  .detail-video::after {
+    display: none !important;
+  }
+  
+  /* Remove border from detail panel */
+  .detail-panel {
+    border-top: none !important;
+  }
+  
+  /* Remove borders from bottom tiles */
+  .detail-panel .bottom-tile {
+    border: none !important;
+    border-bottom: none !important;
+  }
+  
+  /* Hide the top border element */
+  .currentTopBorder {
+    display: none !important;
+  }
+  
+  /* Remove any inline border styles */
+  [style*="border"] {
+    border: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+  }
+}
+
 .cell.edge-top {
   border-top: none;
 }

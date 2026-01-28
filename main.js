@@ -111,7 +111,7 @@ function showContactDescription() {
       </div>
     </div>
     
-    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #333;">
+    <div style="margin-top: 15px; padding-top: 10px;">
       <img src="SF Logo.png" alt="SOMETHING FOUND" style="width: 40px; height: 40px; cursor: pointer;" onclick="this.closest('.cell').remove(); setTimeout(() => updateGridCSS(), 50);">
       <div style="margin-top: 5px;">
         <small style="color: #999; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">Tap SF logo to close</small>
@@ -292,7 +292,6 @@ function openPhoneContact() {
     background: black;
     color: white;
     padding: 20px;
-    border: 1px solid white;
     z-index: 1000;
     font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
     display: flex;
@@ -457,30 +456,57 @@ function handleIOSVideoAutoplay() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   
   if (isIOS && video) {
+    // Set video attributes for iOS compatibility
+    video.muted = true;
+    video.playsinline = true;
+    video.webkitPlaysinline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    
     // Try to play video on first user interaction
     const playVideo = () => {
-      video.play().catch(error => {
+      video.play().then(() => {
+        console.log('iOS video playing successfully');
+      }).catch(error => {
         console.log('iOS video autoplay prevented:', error);
-        // Fallback: hide video and show background color
-        video.style.display = 'none';
-        document.body.style.backgroundColor = '#000';
+        // Don't hide video, let it try again on next interaction
       });
     };
     
     // Try to play immediately
     playVideo();
     
-    // Also try on first touch/click
+    // Add multiple event listeners to catch user interaction
     document.addEventListener('touchstart', playVideo, { once: true });
     document.addEventListener('click', playVideo, { once: true });
+    document.addEventListener('scroll', playVideo, { once: true });
     
-    // Add a fallback in case video never plays
-    setTimeout(() => {
+    // Add a fallback that keeps trying instead of hiding
+    const retryPlay = () => {
       if (video.paused) {
-        video.style.display = 'none';
-        document.body.style.backgroundColor = '#000';
+        video.play().catch(() => {
+          console.log('iOS video retry failed, will try again');
+        });
       }
-    }, 3000);
+    };
+    
+    // Retry every 2 seconds for the first 10 seconds
+    let retryCount = 0;
+    const retryInterval = setInterval(() => {
+      retryCount++;
+      if (retryCount >= 5) {
+        clearInterval(retryInterval);
+        return;
+      }
+      retryPlay();
+    }, 2000);
+    
+    // Also try when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && video.paused) {
+        playVideo();
+      }
+    });
   }
 }
 
@@ -1022,6 +1048,11 @@ function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = [])
     `;
   }
   
+  // Hide top border in phone mode
+  if (window.innerWidth <= 768) {
+    currentTopBorder.style.display = 'none';
+  }
+  
   // Track which images we've used for each project
   const usedProjectImages = {};
   allProjectsOrdered.forEach(project => {
@@ -1072,7 +1103,6 @@ function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = [])
         background-image: url('${img.url}');
         ${imageFolders[img.folderIndex].name === 'LZ129' ? 'background-size: 140% auto; background-position: center center;' : imageFolders[img.folderIndex].name === 'I.M.A.G.E' ? 'background-size: 110% auto; background-position: center;' : 'background-size: cover; background-position: center;'}
         cursor: pointer;
-        border-left: 1px solid white;
         box-sizing: border-box;
       `;
       
@@ -1218,7 +1248,6 @@ function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = [])
           background-image: url('${img.url}');
           ${imageFolders[img.folderIndex].name === 'LZ129' ? 'background-size: 140% auto; background-position: center center;' : imageFolders[img.folderIndex].name === 'I.M.A.G.E' ? 'background-size: 110% auto; background-position: center;' : 'background-size: cover; background-position: center;'}
           cursor: pointer;
-          border-left: 1px solid white;
           box-sizing: border-box;
         `;
         
@@ -1261,7 +1290,6 @@ function createContinuousStrip(allProjectsOrdered, capturedBottomRowImages = [])
           background-image: url('${img.url}');
           ${imageFolders[img.folderIndex].name === 'LZ129' ? 'background-size: 140% auto; background-position: center center;' : imageFolders[img.folderIndex].name === 'I.M.A.G.E' ? 'background-size: 110% auto; background-position: center;' : 'background-size: cover; background-position: center;'}
           cursor: pointer;
-          border-left: 1px solid white;
           box-sizing: border-box;
         `;
         
@@ -1912,7 +1940,7 @@ function openPhoneDetailView(imageUrl, folderIndex) {
       <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">${project.name} ${project.year || project.location ? '<span style="font-weight: normal; color: #ccc;"> (' + (project.year || '') + (project.year && project.location ? ', ' : '') + (project.location || '') + ')</span>' : ''}</h3>
       <p style="margin: 0 0 10px 0;">${project.description}</p>
       ${project.cast ? `<p style="margin: 0 0 10px 0; font-style: italic; color: #ccc;">${project.cast}</p>` : ''}
-      <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #333;">
+      <div style="margin-top: 15px; padding-top: 10px;">
         <small style="color: #999; cursor: pointer;" onclick="this.closest('.cell').remove(); setTimeout(() => updateGridCSS(), 50);">Tap to close</small>
       </div>
     `;
