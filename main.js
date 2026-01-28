@@ -3207,12 +3207,35 @@ function setupGrid() {
         }
         
       } else if (cellIndex === 13) {
-        // Tile 14: SUTURE - handle specifically
+        // Tile 14: Bottom SF logo - MOVED TO ELIMINATE GAP, SUTURE stays at 13
+        cell.classList.add('logo');
+        cell.dataset.tab = 'logo';
+        
+        const logoImg = document.createElement('img');
+        logoImg.src = 'SF Logo.png';
+        logoImg.alt = 'SOMETHING FOUND';
+        front.appendChild(logoImg);
+        
+        const logoImgBack = document.createElement('img');
+        logoImgBack.src = 'SF Logo.png';
+        logoImgBack.alt = 'SOMETHING FOUND';
+        back.appendChild(logoImgBack);
+        
+        cell.style.pointerEvents = 'auto';
+        
+        // Phone mode: Use phone-specific homepage return
+        cell.addEventListener('click', (e) => {
+          e.stopPropagation();
+          phoneReturnToHomepage();
+        });
+        
+      } else if (cellIndex === 14) {
+        // Tile 15: SUTURE - SUTURE stays in perfect position
         const sutureProject = imageFolders.find(p => p.name === 'SUTURE');
         if (sutureProject) {
           const firstImage = `${sutureProject.path}/1.${sutureProject.ext}`;
           
-          console.log(`Phone mode - Tile 13 (SUTURE): ${sutureProject.name}, image: ${firstImage}`);
+          console.log(`Phone mode - Tile 14 (SUTURE): ${sutureProject.name}, image: ${firstImage}`);
           
           // Set the background image
           back.style.backgroundImage = `url('${firstImage}')`;
@@ -3259,29 +3282,6 @@ function setupGrid() {
             openPhoneDetailView(imageUrl, folderIndex);
           });
         }
-        
-      } else if (cellIndex === 14) {
-        // Tile 15: Bottom SF logo - directly after SUTURE, NO GAP
-        cell.classList.add('logo');
-        cell.dataset.tab = 'logo';
-        
-        const logoImg = document.createElement('img');
-        logoImg.src = 'SF Logo.png';
-        logoImg.alt = 'SOMETHING FOUND';
-        front.appendChild(logoImg);
-        
-        const logoImgBack = document.createElement('img');
-        logoImgBack.src = 'SF Logo.png';
-        logoImgBack.alt = 'SOMETHING FOUND';
-        back.appendChild(logoImgBack);
-        
-        cell.style.pointerEvents = 'auto';
-        
-        // Phone mode: Use phone-specific homepage return
-        cell.addEventListener('click', (e) => {
-          e.stopPropagation();
-          phoneReturnToHomepage();
-        });
         
       }
       
