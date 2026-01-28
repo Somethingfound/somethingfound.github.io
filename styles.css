@@ -648,6 +648,18 @@ body::-webkit-scrollbar {
     height: 100%;
   }
   
+  /* Hide grid completely when contact is open in phone mode */
+  body.detail-open .grid {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  
+  /* Phone mode contact panel positioning */
+  body.detail-open .contact-panel {
+    top: 15vh; /* Lower top position to show SF logo completely */
+    height: 85vh; /* Increase height to fill screen */
+  }
+  
   /* Make the area above video black when open */
   .detail-panel.open::before {
     content: '';

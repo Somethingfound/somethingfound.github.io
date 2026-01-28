@@ -32,7 +32,424 @@ const imageFolders = [
   { path: 'Stills/SUTURE stills', count: 70, ext: 'jpg', contain: false, category: 'documentary', name: 'SUTURE: staging the scars', year: '2024', location: 'Italy', cast: 'artwork by Leonardo Dal Bo. curated by Toby Paul Jones and Oskar Uhrskov. exhibited Venice Arsenale', featured: '', description: 'Our skin is a surface. A surface which changes with time - the cracks on it are the indelible mark of happenings, of time imprinting itself on our bodies. As I age, cracks - their very essence as tactile evidence of lost (or found) time - have fascinated me. I am a person who ages, whose skin cracks as time moves forward. But as my skin cracks, it leaves a trace of the past in the present, a physical manifestation of living memory.\nA wall, like our skin, has a living memory. A sudden, intense blow can create a crack, or slowly a fracture can form as pieces tumble - but the living memory of those pieces remains - despite their absence, the trace of their presence lingers. Sutures allow our wounds to heal, for cracks to connect, but we will always wear the scars of time, and must not forget where they came from. \nIf a crack is a wound, how can we use them to help us heal the wounds of history? The question is not to look away from the cracks, but to find them, to remember them, and by remembering them, imagine alternative futures. \n\'Nothing is created, nothing is destroyed, everything is transformed\'. - Lavoisier\'s Law', vimeoId: '1157528596' }
 ];
 
-// Handle iOS video autoplay
+// Phone mode specific contact description tile
+function showContactDescription() {
+  console.log('Phone mode - Creating contact description tile');
+  
+  // Check if contact description tile already exists
+  const existingContact = document.querySelector('[data-contact-description="true"]');
+  if (existingContact) {
+    console.log('Phone mode - Contact description tile already exists, removing old one');
+    existingContact.remove();
+    // Update grid CSS to adjust scrollable area after removal
+    updateGridCSS();
+    return;
+  }
+  
+  // Find the SF logo tile (index 0) to insert contact tile after it
+  const cells = document.querySelectorAll('.cell');
+  const insertPosition = 1; // Insert after SF logo tile (index 0)
+  
+  // Create new contact description tile
+  const contactTile = document.createElement('div');
+  contactTile.className = 'cell';
+  contactTile.setAttribute('data-contact-description', 'true');
+  contactTile.style.cssText = `
+    background: black;
+    z-index: 50;
+  `;
+  
+  const inner = document.createElement('div');
+  inner.className = 'cell-inner';
+  
+  const front = document.createElement('div');
+  front.className = 'cell-front';
+  front.style.cssText = `
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+  `;
+  
+  // Create contact content
+  const contactContainer = document.createElement('div');
+  contactContainer.style.cssText = `
+    color: white;
+    font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    max-height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    text-align: center;
+  `;
+  
+  contactContainer.innerHTML = `
+    <div class="contact-header" style="text-align: center; margin-bottom: 20px;">
+      <div class="logo-container" style="position: relative; margin-bottom: 15px;">
+        <img src="NAMES CIRCLE.png" class="names-circle" alt="Names Circle" style="width: 120px; height: 120px; animation: rotate 20s linear infinite;">
+        <img src="SF Logo.png" class="sf-logo" alt="Something Found Logo" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px;">
+      </div>
+      <h2 class="tagline" style="margin: 10px 0; font-size: 12px; font-weight: normal; color: #ccc; line-height: 1.3; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">A hybrid media company working across documentary film, site-specific artwork, archive, and architecture.</h2>
+    </div>
+    
+    <div class="contact-content" style="display: flex; justify-content: space-between; text-align: left;">
+      <div class="contact-left" style="flex: 1;">
+        <div class="contact-section" style="margin-bottom: 15px;">
+          <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">Contact</h3>
+          <p style="margin: 0; font-size: 14px; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;"><a href="mailto:contact@somethingfound.online" style="color: white;">contact@somethingfound.online</a></p>
+        </div>
+        
+        <div class="contact-section">
+          <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">Locations</h3>
+          <p style="margin: 0; font-size: 14px; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">Bologna - Aarhus - London</p>
+        </div>
+      </div>
+      
+      <div class="contact-right" style="flex: 1;">
+      </div>
+    </div>
+    
+    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #333;">
+      <img src="SF Logo.png" alt="SOMETHING FOUND" style="width: 40px; height: 40px; cursor: pointer;" onclick="this.closest('.cell').remove(); setTimeout(() => updateGridCSS(), 50);">
+      <div style="margin-top: 5px;">
+        <small style="color: #999; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;">Tap SF logo to close</small>
+      </div>
+    </div>
+    
+    <style>
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  `;
+  
+  front.appendChild(contactContainer);
+  inner.appendChild(front);
+  contactTile.appendChild(inner);
+  
+  // Insert the new tile after the SF logo tile
+  const grid = document.querySelector('.grid');
+  if (cells[insertPosition]) {
+    grid.insertBefore(contactTile, cells[insertPosition]);
+  } else {
+    grid.appendChild(contactTile);
+  }
+  
+  // Update grid CSS to adjust scrollable area after adding contact tile
+  updateGridCSS();
+  
+  console.log(`Phone mode - Contact description tile inserted at position ${insertPosition}`);
+}
+
+// Phone mode specific contact description hide function
+function hideContactDescription() {
+  console.log('Phone mode - Hiding contact description tile');
+  
+  // Find and remove contact description tile
+  const descCell = document.querySelector('[data-contact-description="true"]');
+  if (descCell) {
+    const descFront = descCell.querySelector('.cell-front');
+    const descBack = descCell.querySelector('.cell-back');
+    
+    // Clear the cell
+    descFront.innerHTML = '';
+    descBack.innerHTML = '';
+    descBack.style.background = '';
+    descBack.style.color = '';
+    descBack.style.padding = '';
+    descBack.style.display = '';
+    descBack.style.flexDirection = '';
+    descBack.style.justifyContent = '';
+    descBack.style.alignItems = '';
+    descBack.style.textAlign = '';
+    descBack.style.fontSize = '';
+    descBack.style.lineHeight = '';
+    descBack.style.zIndex = '';
+    
+    // Remove the marker
+    delete descCell.dataset.contactDescription;
+    
+    // Update grid to remove the description tile
+    updateGridCSS();
+    
+    console.log('Phone mode - Contact description tile removed');
+  }
+}
+
+// Phone mode specific homepage return - no array functions
+function phoneReturnToHomepage() {
+  console.log('Phone mode - Returning to homepage (no array functions)');
+  
+  // Most aggressive scroll to top methods
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  window.scroll(0, 0);
+  window.scrollTo(0, 0);
+  
+  // Force scroll on any scrollable containers
+  const grid = document.querySelector('.grid');
+  if (grid) {
+    grid.scrollTop = 0;
+    grid.scrollLeft = 0;
+  }
+  
+  // Try smooth scroll as fallback after forcing immediate scroll
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, 50);
+  
+  console.log('Phone mode - Scroll to top executed with multiple methods');
+}
+
+// Phone mode specific contact handler - overlay on contact button with black background
+function openPhoneContact() {
+  console.log('Phone mode - Opening contact panel');
+  
+  // Get grid config for tile sizing first
+  const config = getGridConfig();
+  const tileWidth = window.innerWidth / config.cols;
+  const tileHeight = tileWidth * (9/16); // 16:9 aspect ratio
+  
+  // Create black overlay that covers everything
+  let blackOverlay = document.querySelector('.phone-contact-overlay');
+  if (!blackOverlay) {
+    blackOverlay = document.createElement('div');
+    blackOverlay.className = 'phone-contact-overlay';
+    blackOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 999;
+      visibility: visible;
+      opacity: 1;
+    `;
+    document.body.appendChild(blackOverlay);
+  }
+  
+  // Make SF logo always on top in phone mode
+  const sfLogoCells = document.querySelectorAll('.cell.logo');
+  sfLogoCells.forEach(cell => {
+    cell.style.zIndex = '1001'; // Above black overlay (999) and contact panel (1000)
+  });
+  
+  // Get or create contact panel that appears on contact button
+  let contactPanel = document.querySelector('.contact-panel');
+  if (!contactPanel) {
+    contactPanel = document.createElement('div');
+    contactPanel.className = 'contact-panel';
+    contactPanel.innerHTML = `
+      <div class="contact-title">
+        <h2>Contact</h2>
+      </div>
+      <div class="contact-info">
+        <p><strong>Email:</strong> <a href="mailto:info@somethingfound.dk">info@somethingfound.dk</a></p>
+        <p><strong>Phone:</strong> +45 41 94 84 07</p>
+        <p><strong>Address:</strong> Copenhagen, Denmark</p>
+      </div>
+      <div class="sf-logo">
+        <img src="SF Logo.png" alt="SOMETHING FOUND">
+      </div>
+      <button class="contact-close">&times;</button>
+    `;
+    document.body.appendChild(contactPanel);
+    
+    // Add close button functionality
+    const closeBtn = contactPanel.querySelector('.contact-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closePhoneContact);
+    }
+    
+    // Add SF logo click functionality - ONLY close contact, no array functions
+    const sfLogo = contactPanel.querySelector('.sf-logo');
+    if (sfLogo) {
+      sfLogo.addEventListener('click', () => {
+        console.log('Phone mode - SF logo in contact clicked, closing contact');
+        closePhoneContact();
+      });
+    }
+  }
+  
+  console.log(`Phone mode - Tile dimensions: ${tileWidth}px x ${tileHeight}px`);
+  console.log(`Phone mode - Contact button position: left: ${tileWidth}px`);
+  
+  // Position contact panel below top SF logo (keep SF logo visible)
+  contactPanel.style.cssText = `
+    position: fixed;
+    top: ${tileHeight + 10}px; // Below top SF logo with 10px gap
+    left: ${tileWidth}px; // On contact tile (tile 2)
+    width: ${tileWidth * 2}px; // 2 tiles wide to show full circle
+    height: ${tileHeight * 2}px; // 2 tiles tall to show full circle
+    background: black;
+    color: white;
+    padding: 20px;
+    border: 1px solid white;
+    z-index: 1000;
+    font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    visibility: visible;
+    opacity: 1;
+    font-size: 14px;
+    line-height: 1.3;
+    text-align: center;
+    overflow: hidden;
+    box-sizing: border-box;
+  `;
+  
+  // Style the contact info for better visibility - larger text for bigger panel
+  const contactInfo = contactPanel.querySelector('.contact-info');
+  if (contactInfo) {
+    contactInfo.style.cssText = `
+      margin: 10px 0;
+      font-size: 14px;
+      line-height: 1.4;
+      color: white;
+      text-align: center;
+      padding: 0;
+    `;
+    
+    // Make each line larger
+    const paragraphs = contactInfo.querySelectorAll('p');
+    paragraphs.forEach(p => {
+      p.style.cssText = `
+        margin: 5px 0;
+        font-size: 14px;
+        line-height: 1.4;
+        color: white;
+      `;
+    });
+  }
+  
+  // Style the contact title - larger
+  const contactTitle = contactPanel.querySelector('.contact-title');
+  if (contactTitle) {
+    contactTitle.style.cssText = `
+      margin: 0 0 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      padding: 0;
+    `;
+    
+    const h2 = contactTitle.querySelector('h2');
+    if (h2) {
+      h2.style.cssText = `
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+      `;
+    }
+  }
+  
+  // Style the SF logo - larger
+  const sfLogo = contactPanel.querySelector('.sf-logo');
+  if (sfLogo) {
+    sfLogo.style.cssText = `
+      margin: 15px 0 0 0;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    `;
+    
+    const img = sfLogo.querySelector('img');
+    if (img) {
+      img.style.cssText = `
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      `;
+    }
+  }
+  
+  // Style the close button - larger
+  const closeBtn = contactPanel.querySelector('.contact-close');
+  if (closeBtn) {
+    closeBtn.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      color: black;
+      border: none;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+  }
+  
+  // Force the panel to be shown
+  contactPanel.classList.add('open');
+  
+  // Fallback: If the panel is still off-screen, use viewport-based positioning
+  setTimeout(() => {
+    const rect = contactPanel.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    
+    console.log(`Phone mode - Contact panel rect:`, rect);
+    console.log(`Phone mode - Viewport width: ${viewportWidth}px`);
+    
+    // If panel is outside viewport, reposition it
+    if (rect.left >= viewportWidth || rect.right <= 0) {
+      console.log('Phone mode - Contact panel outside viewport, repositioning');
+      
+      // Position in the center of the screen as fallback
+      const fallbackLeft = (viewportWidth - rect.width) / 2;
+      const fallbackTop = (window.innerHeight - rect.height) / 2;
+      
+      contactPanel.style.left = `${fallbackLeft}px`;
+      contactPanel.style.top = `${fallbackTop}px`;
+      
+      console.log(`Phone mode - Fallback position: left: ${fallbackLeft}px, top: ${fallbackTop}px`);
+    }
+  }, 100);
+  
+  console.log('Phone mode - Contact panel opened on contact button with black overlay');
+}
+
+// Phone mode specific contact close handler
+function closePhoneContact() {
+  console.log('Phone mode - Closing contact panel');
+  
+  // Hide contact panel
+  const contactPanel = document.querySelector('.contact-panel');
+  if (contactPanel) {
+    contactPanel.classList.remove('open');
+  }
+  
+  // Remove black overlay
+  const blackOverlay = document.querySelector('.phone-contact-overlay');
+  if (blackOverlay) {
+    blackOverlay.style.visibility = 'hidden';
+    blackOverlay.style.opacity = '0';
+  }
+  
+  // Reset SF logo z-index back to normal
+  const sfLogoCells = document.querySelectorAll('.cell.logo');
+  sfLogoCells.forEach(cell => {
+    cell.style.zIndex = '10'; // Back to normal z-index
+  });
+  
+  console.log('Phone mode - Contact panel closed and overlay removed');
+}
 function handleIOSVideoAutoplay() {
   const video = document.querySelector('.bg-video');
   
@@ -261,6 +678,20 @@ function switchTab(tab) {
   }
   
   currentTab = tab;
+  
+  // PHONE MODE: Handle scroll locking for contact page
+  const config = getGridConfig();
+  if (config.cols === 1) {
+    if (tab === 'contact') {
+      // Lock scroll when opening contact in phone mode
+      document.body.classList.add('detail-open');
+      console.log('Phone mode - Contact opened, scroll locked');
+    } else if (previousTab === 'contact') {
+      // Unlock scroll when closing contact in phone mode
+      document.body.classList.remove('detail-open');
+      console.log('Phone mode - Contact closed, scroll unlocked');
+    }
+  }
   
   // Handle logo fade effects when switching to/from contact
   if (tab === 'contact') {
@@ -985,119 +1416,21 @@ function removeContinuousStrip() {
 }
 
 function closeDetailView() {
-  if (!detailView) return;
-  
-  const detailPanel = document.getElementById('detailPanel');
-  
-  // Clean up bottom row tiles
-  const bottomTiles = detailPanel.querySelector('.bottom-tiles');
-  if (bottomTiles) {
-    bottomTiles.remove();
+  // COMPLETE MODE SEPARATION - Use appropriate function based on mode
+  if (isPhoneMode()) {
+    console.log('Using phone close detail view');
+    closePhoneDetailView();
+    return;
   }
   
-  // Clean up picture viewer if it exists
-  if (detailPanel.cleanupGallery) {
-    detailPanel.cleanupGallery();
-    detailPanel.cleanupGallery = null;
+  if (isDesktopMode()) {
+    console.log('Using desktop close detail view');
+    closeDesktopDetailView();
+    return;
   }
   
-  // Clear video immediately to stop playback
-  detailPanel.querySelector('.detail-video').innerHTML = '';
-  
-  // Get current grid configuration for proper row calculation
-  const config = getGridConfig();
-  
-  // Re-enable scroll in phone mode when video closes
-  if (config.cols === 1) {
-    document.body.classList.remove('detail-open');
-  }
-  
-  // Pre-generate all new images to restore tile backgrounds - NEVER for top row or phone mode
-  const newImages = [];
-  const cells = document.querySelector('.grid').querySelectorAll('.cell');
-  
-  // CRITICAL: Skip image regeneration entirely in phone mode
-  if (config.cols === 1) {
-    console.log('Phone mode detected - preserving phone mode images in closeDetailView');
-    // Just restore classes without changing images - preserve phone mode structure
-    cells.forEach((cell, i) => {
-      cell.classList.remove('grid-hidden');
-      cell.classList.remove('animating');
-      cell.classList.remove('contact-flip');
-      cell.classList.remove('flipped');
-      cell.classList.remove('detail-bottom');
-      
-      // CRITICAL: Ensure phone mode back elements remain visible
-      const back = cell.querySelector('.cell-back');
-      if (back) {
-        back.style.visibility = 'visible';
-        back.style.opacity = '1';
-        back.style.transform = 'none'; // Ensure no rotation in phone mode
-      }
-    });
-    
-    // Close the detail panel
-    detailPanel.classList.remove('open');
-    detailView = null;
-    return; // Exit early for phone mode
-  }
-  
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols);
-    // NEVER generate images for top row (row 0) - this prevents pictures in top row
-    if (row === 0) {
-      newImages[i] = null;
-      return;
-    }
-    // Generate images only for non-top-row cells
-    if (cell.classList.contains('logo')) {
-      newImages[i] = null; // Logo cell has no background image
-    } else {
-      newImages[i] = getRandomImage();
-    }
-  });
-  
-  // Restore all grid rows except top row - NEVER touch top row
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols);
-    if (row >= 1) {  // Restore all rows except top row
-      cell.classList.remove('grid-hidden');
-      cell.classList.remove('animating');
-      cell.classList.remove('contact-flip');
-      cell.classList.remove('flipped');
-      cell.classList.remove('detail-bottom');
-      
-      const back = cell.querySelector('.cell-back');
-      back.classList.remove('contact-back');
-      
-      // Restore the background image
-      if (newImages[i]) {
-        back.style.backgroundImage = `url('${newImages[i].url}')`;
-        cell.dataset.folderIndex = newImages[i].folderIndex;
-        cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name;
-        if (newImages[i].contain) {
-          back.classList.add('contain');
-        } else {
-          back.classList.remove('contain');
-        }
-      }
-    }
-    // NEVER touch top row (row === 0) - leave it completely alone
-  });
-  
-  // Now fade out the panel (tiles already reset underneath)
-  detailPanel.classList.remove('open');
-  
-  // Force fade black overlay out immediately and ensure it happens
-  const blackOverlay = document.getElementById('blackOverlay');
-  blackOverlay.style.opacity = '0';
-  
-  // Double-check after a delay in case something interferes
-  setTimeout(() => {
-    blackOverlay.style.opacity = '0';
-  }, 200);
-  
-  detailView = null;
+  // Fallback - should never reach here
+  console.error('ERROR: Unknown mode in closeDetailView');
 }
 
 function createPictureViewer(container, folder) {
@@ -1241,15 +1574,639 @@ function formatDescription(description) {
 }
 
 function openDetailView(imageUrl, folderIndex) {
+  // COMPLETE MODE SEPARATION - Use appropriate function based on mode
+  if (isPhoneMode()) {
+    console.log('Using phone detail view');
+    openPhoneDetailView(imageUrl, folderIndex);
+    return;
+  }
+  
+  if (isDesktopMode()) {
+    console.log('Using desktop detail view');
+    openDesktopDetailView(imageUrl, folderIndex);
+    return;
+  }
+  
+  // Fallback - should never reach here
+  console.error('ERROR: Unknown mode in openDetailView');
+}
+
+// Mode detection helper functions
+function isPhoneMode() {
+  const config = getGridConfig();
+  return config.cols === 1;
+}
+
+function isDesktopMode() {
+  const config = getGridConfig();
+  return config.cols > 1;
+}
+
+// Phone mode only functions - NEVER called from desktop mode
+function openPhoneDetailView(imageUrl, folderIndex) {
+  // DEFENSIVE: Ensure we're actually in phone mode
+  if (!isPhoneMode()) {
+    console.error('ERROR: openPhoneDetailView called in desktop mode!');
+    return;
+  }
+  
+  const project = imageFolders[folderIndex];
+  if (!project) return;
+  
+  console.log(`Phone mode - Opening detail view for: ${project.name}`);
+  
+  // Get the tiles for phone video layout
+  const cells = document.querySelectorAll('.cell');
+  
+  // 2. Find which tile was clicked and use it for video
+  // We need to find the tile that contains this project
+  let clickedTileIndex = -1;
+  for (let i = 0; i < cells.length; i++) {
+    if (parseInt(cells[i].dataset.folderIndex) === folderIndex) {
+      clickedTileIndex = i;
+      break;
+    }
+  }
+  
+  if (clickedTileIndex === -1) {
+    console.error('ERROR: Could not find clicked tile for project');
+    return;
+  }
+  
+  console.log(`Phone mode - Found clicked tile at index: ${clickedTileIndex}`);
+  
+  // 3. Show video in the clicked tile only
+  const videoTile = cells[clickedTileIndex]; // Clicked tile only
+  
+  if (videoTile) {
+    // Clear the tile
+    const videoFront = videoTile.querySelector('.cell-front');
+    const videoBack = videoTile.querySelector('.cell-back');
+    
+    videoFront.innerHTML = '';
+    videoBack.innerHTML = '';
+    
+    // Clear background image from the tile
+    videoBack.style.backgroundImage = 'none';
+    videoBack.style.backgroundColor = 'transparent';
+    videoFront.style.backgroundColor = 'transparent';
+    
+    // Ensure the tile itself allows clicking
+    videoTile.style.pointerEvents = 'auto';
+    videoFront.style.pointerEvents = 'none'; // Let iframe handle clicks
+    videoBack.style.pointerEvents = 'none';  // Let iframe handle clicks
+    
+    console.log(`Phone mode - Cleared tile ${clickedTileIndex}, project has vimeoId: ${!!project.vimeoId}`);
+    
+    if (project.vimeoId) {
+      // Try a simpler Vimeo embed approach
+      const iframe = document.createElement('iframe');
+      // Use the most basic Vimeo URL
+      iframe.src = `https://player.vimeo.com/video/${project.vimeoId}`;
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'fullscreen');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.cssText = `
+        width: 100%;
+        height: 100%;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: auto;
+        background: black;
+      `;
+      
+      // Add the iframe directly to the tile (not to front/back)
+      videoTile.innerHTML = '';
+      videoTile.appendChild(iframe);
+      
+      console.log(`Phone mode - Added basic Vimeo iframe for ${project.name} with ID: ${project.vimeoId}`);
+      
+      // Remove all other elements that might interfere
+      videoFront.style.display = 'none';
+      videoBack.style.display = 'none';
+      
+    } else {
+      // Create a simple picture viewer for projects without videos
+      console.log(`Phone mode - Creating simple picture viewer for ${project.name}`);
+      
+      // Create picture container
+      const pictureContainer = document.createElement('div');
+      pictureContainer.style.cssText = `
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      `;
+      
+      // Create title overlay
+      const titleOverlay = document.createElement('div');
+      titleOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 10;
+        pointer-events: none;
+        font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+      `;
+      titleOverlay.textContent = project.name;
+      
+      // Create navigation hint overlay
+      const navHint = document.createElement('div');
+      navHint.style.cssText = `
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 12px;
+        opacity: 0.7;
+        z-index: 10;
+        pointer-events: none;
+        font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+      `;
+      navHint.textContent = 'Tap left side for previous, right side for next';
+      
+      // Create image element
+      const img = document.createElement('img');
+      img.style.cssText = `
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        cursor: pointer;
+      `;
+      
+      // Track current image index
+      let currentImageIndex = 0;
+      const totalImages = project.count;
+      
+      // Function to load image
+      function loadImage(index) {
+        const imagePath = `${project.path}/${index + 1}.${project.ext}`;
+        img.src = imagePath;
+        // Update navigation hint
+        navHint.textContent = `Image ${index + 1}/${totalImages} - Tap left for previous, right for next`;
+        console.log(`Phone mode - Loading image ${index + 1}/${totalImages}: ${imagePath}`);
+      }
+      
+      // Add click handler for navigation
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Determine click position for navigation direction
+        const rect = img.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const imageWidth = rect.width;
+        
+        // Normal navigation for left/right clicks
+        if (clickX < imageWidth / 2) {
+          // Click on left side - go to previous image
+          currentImageIndex = (currentImageIndex - 1 + totalImages) % totalImages;
+          console.log(`Phone mode - Went to previous image ${currentImageIndex + 1}/${totalImages}`);
+        } else {
+          // Click on right side - go to next image
+          currentImageIndex = (currentImageIndex + 1) % totalImages;
+          console.log(`Phone mode - Advanced to next image ${currentImageIndex + 1}/${totalImages}`);
+        }
+        
+        loadImage(currentImageIndex);
+      });
+      
+      // Add touch/swipe support for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      img.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      
+      img.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      });
+      
+      function handleSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            // Swipe left - go to next image
+            currentImageIndex = (currentImageIndex + 1) % totalImages;
+            console.log(`Phone mode - Swiped left to next image ${currentImageIndex + 1}/${totalImages}`);
+          } else {
+            // Swipe right - go to previous image
+            currentImageIndex = (currentImageIndex - 1 + totalImages) % totalImages;
+            console.log(`Phone mode - Swiped right to previous image ${currentImageIndex + 1}/${totalImages}`);
+          }
+          loadImage(currentImageIndex);
+        }
+      }
+      
+      // Load first image
+      loadImage(0);
+      
+      // Assemble the picture viewer
+      pictureContainer.appendChild(img);
+      pictureContainer.appendChild(titleOverlay);
+      pictureContainer.appendChild(navHint);
+      
+      // Add the picture container directly to the tile
+      videoTile.innerHTML = '';
+      videoTile.appendChild(pictureContainer);
+      
+      // Hide front/back elements
+      videoFront.style.display = 'none';
+      videoBack.style.display = 'none';
+      
+      console.log(`Phone mode - Picture viewer created for ${project.name} with ${totalImages} images`);
+    }
+    
+    // Show description tile immediately after loading video/gallery
+    setTimeout(() => {
+      showDescriptionTile();
+      console.log(`Phone mode - Showing description immediately for ${project.name}`);
+      
+      // Try to force grid update directly
+      setTimeout(() => {
+        if (typeof updateGridCSS === 'function') {
+          console.log('Phone mode - Calling updateGridCSS to refresh grid');
+          updateGridCSS();
+        }
+      }, 200);
+    }, 100);
+    
+    videoTile.style.zIndex = '50';
+    console.log(`Phone mode - Set tile z-index to 50`);
+  }
+  
+  // Function to show description tile
+  function showDescriptionTile() {
+    console.log(`Phone mode - Creating description tile for ${project.name}`);
+    
+    // Check if description tile already exists for this project
+    const existingDescription = document.querySelector(`[data-description-project="${project.name}"]`);
+    if (existingDescription) {
+      console.log(`Phone mode - Description tile already exists for ${project.name}, removing old one`);
+      existingDescription.remove();
+      // Update grid CSS to adjust scrollable area after removal
+      updateGridCSS();
+      return;
+    }
+    
+    // Find the position to insert the new tile (below current tile)
+    const cells = document.querySelectorAll('.cell');
+    const insertPosition = clickedTileIndex + 1;
+    
+    // Create new description tile
+    const descriptionTile = document.createElement('div');
+    descriptionTile.className = 'cell';
+    descriptionTile.setAttribute('data-description-project', project.name);
+    descriptionTile.style.cssText = `
+      background: black;
+      z-index: 50;
+    `;
+    
+    const inner = document.createElement('div');
+    inner.className = 'cell-inner';
+    
+    const front = document.createElement('div');
+    front.className = 'cell-front';
+    front.style.cssText = `
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    `;
+    
+    // Create description content
+    const descContainer = document.createElement('div');
+    descContainer.style.cssText = `
+      color: white;
+      font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      max-height: 100%;
+      overflow-y: auto;
+      width: 100%;
+    `;
+    
+    descContainer.innerHTML = `
+      <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">${project.name} ${project.year || project.location ? '<span style="font-weight: normal; color: #ccc;"> (' + (project.year || '') + (project.year && project.location ? ', ' : '') + (project.location || '') + ')</span>' : ''}</h3>
+      <p style="margin: 0 0 10px 0;">${project.description}</p>
+      ${project.cast ? `<p style="margin: 0 0 10px 0; font-style: italic; color: #ccc;">${project.cast}</p>` : ''}
+      <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #333;">
+        <small style="color: #999; cursor: pointer;" onclick="this.closest('.cell').remove(); setTimeout(() => updateGridCSS(), 50);">Tap to close</small>
+      </div>
+    `;
+    
+    front.appendChild(descContainer);
+    inner.appendChild(front);
+    descriptionTile.appendChild(inner);
+    
+    // Insert the new tile after the current tile
+    const grid = document.querySelector('.grid');
+    if (cells[insertPosition]) {
+      grid.insertBefore(descriptionTile, cells[insertPosition]);
+    } else {
+      grid.appendChild(descriptionTile);
+    }
+    
+    // Update grid CSS to adjust scrollable area after adding description
+    updateGridCSS();
+    
+    console.log(`Phone mode - Description tile inserted at position ${insertPosition}`);
+  }
+  
+  // Function to update grid rows based on description tiles
+  function updateGridRows() {
+    // Don't change heights here - it causes jump to top and scroll lock
+    // The height should be set once during initial grid setup
+    const grid = document.querySelector('.grid');
+    const config = getGridConfig();
+    
+    if (config.cols === 1) { // Only in phone mode
+      const baseRows = 15;
+      const descriptionTiles = document.querySelectorAll('[data-description-project]').length;
+      const totalRows = baseRows + descriptionTiles;
+      
+      // Calculate tile height
+      const tileWidth = window.innerWidth / config.cols;
+      const portraitTileHeight = tileWidth * (9/16);
+      
+      console.log(`Phone mode - DEBUG: baseRows=${baseRows}, descriptionTiles=${descriptionTiles}, totalRows=${totalRows}`);
+      console.log(`Phone mode - DEBUG: tileHeight=${portraitTileHeight}px, totalHeight=${totalRows * portraitTileHeight}px`);
+      console.log(`Phone mode - DEBUG: grid.offsetHeight=${grid.offsetHeight}px, grid.scrollHeight=${grid.scrollHeight}px`);
+      console.log(`Phone mode - DEBUG: document.body.scrollHeight=${document.body.scrollHeight}px`);
+      
+      // ONLY update grid template rows - NO height changes
+      grid.style.gridTemplateRows = `repeat(${totalRows}, ${portraitTileHeight}px)`;
+      
+      console.log(`Phone mode - Grid template rows updated to ${totalRows} rows (NO height changes to prevent jump/lock)`);
+    }
+  }
+  
+  // Function to set initial grid height for phone mode (call this once during setup)
+  function setInitialPhoneGridHeight() {
+    const grid = document.querySelector('.grid');
+    const config = getGridConfig();
+    
+    if (config.cols === 1) { // Only in phone mode
+      const baseRows = 15;
+      const maxDescriptionTiles = 12; // Maximum description tiles we want to support
+      const totalRows = baseRows + maxDescriptionTiles; // Always 27 rows total
+      
+      // Calculate tile height
+      const tileWidth = window.innerWidth / config.cols;
+      const portraitTileHeight = tileWidth * (9/16);
+      const totalHeight = totalRows * portraitTileHeight;
+      
+      console.log(`Phone mode - Setting initial grid height to ${totalRows} rows (${totalHeight}px) to support up to ${maxDescriptionTiles} description tiles`);
+      
+      // Set grid template rows to maximum (27 rows)
+      grid.style.gridTemplateRows = `repeat(${totalRows}, ${portraitTileHeight}px)`;
+      
+      // Set grid height to accommodate all possible description tiles
+      grid.style.height = `${totalHeight}px`;
+      grid.style.minHeight = `${totalHeight}px`;
+      
+      console.log(`Phone mode - Initial grid height set successfully`);
+    }
+  }
+  
+  // Function to adjust grid height when description tiles are added/removed
+  function adjustGridHeight(addTile) {
+    const grid = document.querySelector('.grid');
+    const config = getGridConfig();
+    
+    if (config.cols === 1) { // Only in phone mode
+      // Calculate tile height for 16:9 aspect ratio
+      const tileWidth = window.innerWidth / config.cols;
+      const portraitTileHeight = tileWidth * (9/16);
+      
+      // Count description tiles
+      const descriptionTiles = document.querySelectorAll('[data-description-project]').length;
+      
+      // Simple: base height + description tiles * tile height
+      const baseHeight = 15 * portraitTileHeight; // 15 base tiles
+      const extraHeight = descriptionTiles * portraitTileHeight; // description tiles
+      const totalHeight = baseHeight + extraHeight;
+      
+      // Just set the grid height directly
+      grid.style.height = `${totalHeight}px`;
+      
+      console.log(`Phone mode - Grid height set to ${totalHeight}px (${descriptionTiles} description tiles)`);
+    }
+  }
+  
+  // Store detail view state
+  detailView = { imageUrl, folderIndex };
+  
+  // Don't lock body scroll in phone mode - not needed
+  // document.body.classList.add('detail-open');
+  
+  console.log('Phone mode - Detail view opened successfully');
+}
+
+function closePhoneDetailView() {
+  // DEFENSIVE: Ensure we're actually in phone mode
+  if (!isPhoneMode()) {
+    console.error('ERROR: closePhoneDetailView called in desktop mode!');
+    return;
+  }
+  
+  if (!detailView) return;
+  
+  console.log('Phone mode - Closing detail view');
+  
+  // Restore all tiles to their original state
+  const cells = document.querySelectorAll('.cell');
+  
+  // 1. Restore SF logo to tile 1 (index 0)
+  const logoTile = cells[0];
+  if (logoTile) {
+    const logoFront = logoTile.querySelector('.cell-front');
+    const logoBack = logoTile.querySelector('.cell-back');
+    
+    logoFront.innerHTML = '';
+    logoBack.innerHTML = '';
+    
+    const logoImg = document.createElement('img');
+    logoImg.src = 'SF Logo.png';
+    logoImg.alt = 'SOMETHING FOUND';
+    logoFront.appendChild(logoImg);
+    
+    const logoImgBack = document.createElement('img');
+    logoImgBack.src = 'SF Logo.png';
+    logoImgBack.alt = 'SOMETHING FOUND';
+    logoBack.appendChild(logoImgBack);
+    
+    logoTile.onclick = returnToHomepage;
+  }
+  
+  // 2. Restore Contact button to tile 2 (index 1)
+  const contactTile = cells[1];
+  if (contactTile) {
+    const contactFront = contactTile.querySelector('.cell-front');
+    const contactBack = contactTile.querySelector('.cell-back');
+    
+    contactFront.innerHTML = '';
+    contactBack.innerHTML = '';
+    
+    const contactLabel = document.createElement('span');
+    contactLabel.className = 'contact-label';
+    contactLabel.textContent = 'Contact';
+    contactFront.appendChild(contactLabel);
+    
+    const contactLabelBack = document.createElement('span');
+    contactLabelBack.className = 'contact-label';
+    contactLabelBack.textContent = 'Contact';
+    contactBack.appendChild(contactLabelBack);
+    
+    contactTile.onclick = () => {
+      // Use phone-specific contact handler to avoid interfering with picture tiles
+      const config = getGridConfig();
+      if (config.cols === 1) {
+        openPhoneContact();
+      } else {
+        switchTab('contact');
+      }
+    };
+  }
+  
+  // 3. Restore Angelika tile to tile 3 (index 2)
+  const angelikaTile = cells[2];
+  if (angelikaTile) {
+    const angelikaProject = imageFolders.find(p => p.name === 'ANGELIKA');
+    if (angelikaProject) {
+      // Get random image from Angelika folder
+      const randomImageNum = Math.floor(Math.random() * angelikaProject.count) + 1;
+      const randomImage = `${angelikaProject.path}/${randomImageNum}.${angelikaProject.ext}`;
+      
+      const angelikaFront = angelikaTile.querySelector('.cell-front');
+      const angelikaBack = angelikaTile.querySelector('.cell-back');
+      
+      angelikaFront.innerHTML = '';
+      angelikaBack.innerHTML = '';
+      
+      // Set the background image
+      angelikaBack.style.backgroundImage = `url('${randomImage}')`;
+      angelikaBack.style.backgroundSize = 'cover';
+      angelikaBack.style.backgroundPosition = 'center';
+      angelikaBack.style.backgroundRepeat = 'no-repeat';
+      angelikaBack.style.backgroundColor = 'transparent';
+      angelikaBack.style.transform = 'none';
+      angelikaBack.style.visibility = 'visible';
+      angelikaBack.style.opacity = '1';
+      angelikaBack.style.zIndex = '10';
+      
+      // Add project name
+      const projectLabel = document.createElement('div');
+      projectLabel.textContent = angelikaProject.name;
+      projectLabel.style.color = 'white';
+      projectLabel.style.fontSize = '14px';
+      projectLabel.style.fontWeight = 'bold';
+      projectLabel.style.position = 'absolute';
+      projectLabel.style.top = '10px';
+      projectLabel.style.left = '10px';
+      projectLabel.style.zIndex = '20';
+      projectLabel.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+      angelikaBack.appendChild(projectLabel);
+      
+      angelikaTile.onclick = () => {
+        const imageUrl = angelikaBack.style.backgroundImage.slice(5, -2);
+        const folderIndex = imageFolders.indexOf(angelikaProject);
+        openPhoneDetailView(imageUrl, folderIndex);
+      };
+    }
+  }
+  
+  // 4. Clear description tile (tile 4, index 3)
+  const descTile = cells[3];
+  if (descTile) {
+    const descFront = descTile.querySelector('.cell-front');
+    const descBack = descTile.querySelector('.cell-back');
+    
+    descFront.innerHTML = '';
+    descBack.innerHTML = '';
+    
+    // Restore the original project that should be at tile 4
+    const otherProjects = imageFolders
+      .filter(p => p.name !== 'ANGELIKA') // Exclude Angelika (already at tile 3)
+      .slice(0, 11); // Take first 11 projects after filtering (CLAYALLIANCE through SUTURE)
+    
+    if (otherProjects.length > 0) {
+      const project = otherProjects[0]; // First project after ANGELIKA (CLAYALLIANCE)
+      const firstImage = `${project.path}/1.${project.ext}`;
+      
+      descBack.style.backgroundImage = `url('${firstImage}')`;
+      descBack.style.backgroundSize = 'cover';
+      descBack.style.backgroundPosition = 'center';
+      descBack.style.backgroundRepeat = 'no-repeat';
+      descBack.style.backgroundColor = 'transparent';
+      descBack.style.transform = 'none';
+      descBack.style.visibility = 'visible';
+      descBack.style.opacity = '1';
+      descBack.style.zIndex = '10';
+      
+      const projectLabel = document.createElement('div');
+      projectLabel.textContent = project.name;
+      projectLabel.style.color = 'white';
+      projectLabel.style.fontSize = '14px';
+      projectLabel.style.fontWeight = 'bold';
+      projectLabel.style.position = 'absolute';
+      projectLabel.style.top = '10px';
+      projectLabel.style.left = '10px';
+      projectLabel.style.zIndex = '20';
+      projectLabel.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+      descBack.appendChild(projectLabel);
+      
+      descTile.onclick = () => {
+        const imageUrl = descBack.style.backgroundImage.slice(5, -2);
+        const folderIndex = imageFolders.indexOf(project);
+        openPhoneDetailView(imageUrl, folderIndex);
+      };
+    }
+  }
+  
+  // Re-enable scroll in phone mode when video closes
+  document.body.classList.remove('detail-open');
+  
+  // Clear detail view state
+  detailView = null;
+  
+  console.log('Phone mode - Detail view closed successfully');
+}
+
+// Desktop mode only functions - NEVER called from phone mode
+function openDesktopDetailView(imageUrl, folderIndex) {
+  // DEFENSIVE: Ensure we're actually in desktop mode
+  if (!isDesktopMode()) {
+    console.error('ERROR: openDesktopDetailView called in phone mode!');
+    return;
+  }
+  
+  // Original desktop detail view logic (unchanged)
   detailView = { imageUrl, folderIndex };
   const detailPanel = document.getElementById('detailPanel');
   const folder = imageFolders[folderIndex];
-  
-  // Disable scroll in phone mode when video opens
-  const config = getGridConfig();
-  if (config.cols === 1) {
-    document.body.classList.add('detail-open');
-  }
   
   // Fade black overlay in for fade-to-black effect
   const blackOverlay = document.getElementById('blackOverlay');
@@ -1258,28 +2215,28 @@ function openDetailView(imageUrl, folderIndex) {
   // Hide content rows (rows 1-3) but keep top row visible like contact page
   const cells = document.querySelectorAll('.cell');
   cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols);
+    const row = Math.floor(i / getGridConfig().cols);
     if (row >= 1 && row <= 3) {
       cell.classList.add('grid-hidden');
     }
   });
   
   // Update detail panel content
-  const videoContainer = detailPanel.querySelector('.detail-video');
+  const videoContainer = document.getElementById('detailPanel').querySelector('.detail-video');
   videoContainer.innerHTML = ''; // Clear previous
   
-  detailPanel.querySelector('.detail-title').innerHTML = folder.name + (folder.year || folder.location ? ' <span class="detail-year">' + (folder.year || '') + (folder.year && folder.location ? ', ' : '') + (folder.location || '') + '</span>' : '');
-  detailPanel.querySelector('.detail-description').innerHTML = formatDescription(folder.description);
+  document.getElementById('detailPanel').querySelector('.detail-title').innerHTML = folder.name + (folder.year || folder.location ? ' <span class="detail-year">' + (folder.year || '') + (folder.year && folder.location ? ', ' : '') + (folder.location || '') + '</span>' : '');
+  document.getElementById('detailPanel').querySelector('.detail-description').innerHTML = formatDescription(folder.description);
   
   // Add cast information if available
-  const castElement = detailPanel.querySelector('.detail-cast');
+  const castElement = document.getElementById('detailPanel').querySelector('.detail-cast');
   if (castElement) {
     castElement.textContent = folder.cast || '';
     castElement.style.display = folder.cast ? 'block' : 'none';
   }
   
   // Add featured information if available
-  const featuredElement = detailPanel.querySelector('.detail-featured');
+  const featuredElement = document.getElementById('detailPanel').querySelector('.detail-featured');
   if (featuredElement) {
     featuredElement.textContent = folder.featured || '';
     featuredElement.style.display = folder.featured ? 'block' : 'none';
@@ -1292,7 +2249,7 @@ function openDetailView(imageUrl, folderIndex) {
   usedBottomRowImages.clear();
   
   // Capture bottom row images BEFORE they get changed
-  const bottomRowCells = Array.from(cells).filter((cell, i) => Math.floor(i / config.cols) === config.rows - 1);
+  const bottomRowCells = Array.from(cells).filter((cell, i) => Math.floor(i / getGridConfig().cols) === getGridConfig().rows - 1);
   const capturedBottomRowImages = bottomRowCells.map(cell => {
     const back = cell.querySelector('.cell-back');
     const imageUrl = back.style.backgroundImage.slice(5, -2); // Remove url('') and ')
@@ -1306,7 +2263,7 @@ function openDetailView(imageUrl, folderIndex) {
   // Animate panel opening
   requestAnimationFrame(() => {
     cells.forEach((cell, i) => {
-      const row = Math.floor(i / config.cols);
+      const row = Math.floor(i / getGridConfig().cols);
       if (row >= 1 && row <= 3) {
         cell.classList.add('animating');
         const back = cell.querySelector('.cell-back');
@@ -1316,7 +2273,7 @@ function openDetailView(imageUrl, folderIndex) {
     
     requestAnimationFrame(() => {
       cells.forEach((cell, i) => {
-        const row = Math.floor(i / config.cols);
+        const row = Math.floor(i / getGridConfig().cols);
         if (row >= 1 && row <= 3) {
           cell.classList.add('contact-flip');
           cell.querySelector('.cell-back').classList.add('contact-back');
@@ -1326,7 +2283,7 @@ function openDetailView(imageUrl, folderIndex) {
       
       setTimeout(() => {
         cells.forEach((cell, i) => {
-          const row = Math.floor(i / config.cols);
+          const row = Math.floor(i / getGridConfig().cols);
           if (row >= 1 && row <= 3) {
             cell.classList.remove('animating');
           }
@@ -1362,6 +2319,98 @@ function openDetailView(imageUrl, folderIndex) {
       currentGallery.cleanup();
     }
   };
+}
+
+function closeDesktopDetailView() {
+  // DEFENSIVE: Ensure we're actually in desktop mode
+  if (!isDesktopMode()) {
+    console.error('ERROR: closeDesktopDetailView called in phone mode!');
+    return;
+  }
+  
+  if (!detailView) return;
+  
+  const detailPanel = document.getElementById('detailPanel');
+  
+  // Clean up bottom row tiles
+  const bottomTiles = detailPanel.querySelector('.bottom-tiles');
+  if (bottomTiles) {
+    bottomTiles.remove();
+  }
+  
+  // Clean up picture viewer if it exists
+  if (detailPanel.cleanupGallery) {
+    detailPanel.cleanupGallery();
+    detailPanel.cleanupGallery = null;
+  }
+  
+  // Clear video immediately to stop playback
+  detailPanel.querySelector('.detail-video').innerHTML = '';
+  
+  // Get current grid configuration for proper row calculation
+  const config = getGridConfig();
+  
+  // DESKTOP MODE ONLY - Continue with desktop logic
+  // Pre-generate all new images to restore tile backgrounds - NEVER for top row
+  const newImages = [];
+  const cells = document.querySelector('.grid').querySelectorAll('.cell');
+  
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols);
+    // NEVER generate images for top row (row 0) - this prevents pictures in top row
+    if (row === 0) {
+      newImages[i] = null;
+      return;
+    }
+    // Generate images only for non-top-row cells
+    if (cell.classList.contains('logo')) {
+      newImages[i] = null; // Logo cell has no background image
+    } else {
+      newImages[i] = getRandomImage();
+    }
+  });
+  
+  // Restore all grid rows except top row - NEVER touch top row
+  cells.forEach((cell, i) => {
+    const row = Math.floor(i / config.cols);
+    if (row >= 1) {  // Restore all rows except top row
+      cell.classList.remove('grid-hidden');
+      cell.classList.remove('animating');
+      cell.classList.remove('contact-flip');
+      cell.classList.remove('flipped');
+      cell.classList.remove('detail-bottom');
+      
+      const back = cell.querySelector('.cell-back');
+      back.classList.remove('contact-back');
+      
+      // Restore the background image
+      if (newImages[i]) {
+        back.style.backgroundImage = `url('${newImages[i].url}')`;
+        cell.dataset.folderIndex = newImages[i].folderIndex;
+        cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name;
+        if (newImages[i].contain) {
+          back.classList.add('contain');
+        } else {
+          back.classList.remove('contain');
+        }
+      }
+    }
+    // NEVER touch top row (row === 0) - leave it completely alone
+  });
+  
+  // Now fade out the panel (tiles already reset underneath)
+  detailPanel.classList.remove('open');
+  
+  // Force fade black overlay out immediately and ensure it happens
+  const blackOverlay = document.getElementById('blackOverlay');
+  blackOverlay.style.opacity = '0';
+  
+  // Double-check after a delay in case something interferes
+  setTimeout(() => {
+    blackOverlay.style.opacity = '0';
+  }, 200);
+  
+  detailView = null;
 }
 
 function refreshContentTiles() {
@@ -1742,56 +2791,49 @@ function getGridConfig() {
   const height = window.innerHeight;
   const aspectRatio = width / height;
   
-  // Determine columns based on screen width and aspect ratio
   let cols, rows;
+  let needsScrolling = false;
   
   if (aspectRatio < 1) {
-    // Portrait mode (phones) - 1 column with enough rows for all projects + logo + contact
+    // Portrait mode (phones) - 1 column with original sizing
     cols = 1;
-    rows = 15; // Show enough tiles for logo + contact + all projects
-  } else if (width >= 1200) {
-    // Very wide screens - 5x5 = 25 tiles
+    rows = 25; // Original phone mode rows value
+    needsScrolling = true; // Enable scrolling for phone mode
+  } else if (aspectRatio < 1.5) {
+    // Tablets and small desktops
+    cols = 2;
+    rows = 3;
+  } else {
+    // Large desktops - RESTORE ORIGINAL 5x5 GRID
     cols = 5;
     rows = 5;
-  } else if (width >= 900) {
-    // Wide screens - 4x6 = 24 tiles
-    cols = 4;
-    rows = 6;
-  } else if (width >= 600) {
-    // Medium screens - 3x8 = 24 tiles
-    cols = 3;
-    rows = 8;
-  } else if (width >= 400) {
-    // Small screens - 2x12 = 24 tiles
-    cols = 2;
-    rows = 12;
-  } else {
-    // Very small screens (landscape phones) - 1 column
-    cols = 1;
-    rows = 15; // Show enough tiles even in very small landscape
   }
   
-  // Check if scrolling is needed (portrait mode with many tiles)
-  const needsScrolling = cols === 1 && rows > 5; // Enable scrolling if more than 5 tiles in phone mode
+  // Calculate positions for navigation tiles
+  let logoPosition = 0;
+  let projectsPosition = null;
+  let contactPosition = 1;
   
-  // Set logo position (always first tile)
-  const logoPosition = 0;
+  // For phone mode, always use fixed positions
+  if (cols === 1) {
+    logoPosition = 0;        // Tile 1: SF logo
+    contactPosition = 1;     // Tile 2: Contact
+    projectsPosition = null; // No projects button in phone mode
+  } else {
+    // Desktop mode positions - ORIGINAL DESKTOP LOGIC
+    logoPosition = 0;
+    projectsPosition = 1;
+    contactPosition = 2;
+  }
   
-  // In phone mode, we need to ensure contact is in position 1 (where projects was)
-  // In desktop mode, contact remains in position 2
-  const projectsPosition = cols === 1 ? null : 1; // Remove projects button in phone mode
-  const contactPosition = cols === 1 ? 1 : 2; // Move contact to position 1 in phone mode
-  
-  return { 
-    cols: cols, 
-    rows: rows, 
-    totalCells: cols * rows,
-    bottomRowCells: 0,
-    needsScrolling: needsScrolling,
-    logoPosition: logoPosition,
-    contactPosition: contactPosition,
-    projectsPosition: projectsPosition,
-    directoryPosition: null // Removed
+  return {
+    cols,
+    rows,
+    logoPosition,
+    projectsPosition,
+    contactPosition,
+    aspectRatio,
+    needsScrolling
   };
 }
 
@@ -1805,7 +2847,13 @@ function updateGridCSS() {
   
   // Calculate actual tile height for precise alignment
   const availableHeight = window.innerHeight;
-  const rowsNeeded = config.rows;
+  let rowsNeeded = config.rows;
+  
+  // PHONE MODE: Use exactly 15 rows for phone mode
+  if (config.cols === 1) {
+    rowsNeeded = 15; // Exactly 15 tiles for phone mode
+  }
+  
   const tileHeight = availableHeight / rowsNeeded;
   
   // Set CSS variable for tile height
@@ -1817,7 +2865,21 @@ function updateGridCSS() {
     // Portrait mode: use exact 16:9 tile height and enable scrolling
     const tileWidth = window.innerWidth / config.cols;
     const portraitTileHeight = tileWidth * (9/16); // Exact 16:9 aspect ratio
-    grid.style.gridTemplateRows = `repeat(${config.rows}, ${portraitTileHeight}px)`; // Use actual rows, not hardcoded 25
+    
+    // For phone mode, calculate rows based on current description tiles + SF logo position
+    if (config.cols === 1) {
+      const descriptionTiles = document.querySelectorAll('[data-description-project]').length;
+      const baseRows = 15; // 15 base tiles
+      const sfLogoPosition = 14; // SF logo is at index 14 (15th tile)
+      const maxRows = sfLogoPosition + 1 + descriptionTiles; // Up to SF logo + description tiles
+      const phoneRows = Math.max(baseRows, maxRows); // At least 15 rows, but expand for descriptions
+      
+      console.log(`Phone mode - Setting grid to ${phoneRows} rows (base: ${baseRows}, descriptions: ${descriptionTiles})`);
+      grid.style.gridTemplateRows = `repeat(${phoneRows}, ${portraitTileHeight}px)`;
+    } else {
+      grid.style.gridTemplateRows = `repeat(${rowsNeeded}, ${portraitTileHeight}px)`;
+    }
+    
     grid.classList.add('scrollable');
     
     // Update tile height for portrait mode
@@ -1835,17 +2897,16 @@ function setupGrid() {
   
   // Get responsive configuration
   const config = getGridConfig();
-  updateGridCSS();
+  updateGridCSS(); // This now handles the 27 rows for phone mode
   
   // Create the correct number of tiles for each configuration
   let totalTiles;
   
   if (config.cols === 1) {
-    // Phone mode: ONLY create exactly what we need - include ALL projects
-    const sortedProjects = imageFolders.sort((a, b) => a.name.localeCompare(b.name));
-    totalTiles = 2 + sortedProjects.length; // Logo + Contact + All projects
+    // Phone mode: Exactly 15 tiles (no gap)
+    totalTiles = 15; // Fixed 15 tiles for phone mode
   } else {
-    // Desktop mode: full grid
+    // Desktop mode: full grid (5x5 = 25 tiles)
     totalTiles = config.cols * config.rows;
   }
   
@@ -1866,7 +2927,7 @@ function setupGrid() {
     }
     
     // Only make top row static in desktop mode, not in phone mode
-    if (isTopRow && config.cols !== 1) {
+    if (config.cols !== 1 && isTopRow) {
       cell.classList.add('static');
     }
     
@@ -1898,9 +2959,26 @@ function setupGrid() {
       cell.style.height = '100%';
       cell.style.visibility = 'visible';
       cell.style.opacity = '1';
+      
+      // IMPORTANT: Only process cells up to our phone mode limit (15 cells)
+      if (cellIndex >= 15) {
+        console.log(`Phone mode - Skipping cell ${cellIndex} (beyond phone mode limit)`);
+        cell.style.backgroundColor = 'transparent';
+        cell.style.pointerEvents = 'none';
+        cell.style.visibility = 'hidden';
+        back.style.backgroundImage = '';
+        front.style.backgroundImage = '';
+        
+        // STILL add the cell to grid to maintain grid structure
+        inner.appendChild(front);
+        inner.appendChild(back);
+        cell.appendChild(inner);
+        grid.appendChild(cell);
+        continue;
+      }
       cell.style.display = 'block';
       cell.style.position = 'relative';
-      cell.style.backgroundColor = 'rgba(0, 255, 0, 0.5)'; // Bright green to verify visibility
+      cell.style.backgroundColor = 'transparent';
       
       // Override any desktop classes that might interfere
       cell.classList.remove('static', 'blank', 'edge-top', 'edge-left');
@@ -1934,7 +3012,7 @@ function setupGrid() {
       back.style.top = '0';
       back.style.left = '0';
       back.style.transform = 'rotateX(180deg)';
-      back.style.backgroundColor = 'rgba(0, 255, 0, 0.5)'; // Bright green on back too
+      back.style.backgroundColor = 'transparent';
       
       if (cellIndex === 0) {
         // Logo cell
@@ -1952,66 +3030,144 @@ function setupGrid() {
         back.appendChild(logoImgBack);
         
         cell.style.pointerEvents = 'auto';
-        cell.addEventListener('click', returnToHomepage);
+        
+        // Add contact button to SF logo tile
+        const contactButton = document.createElement('button');
+        contactButton.textContent = 'Contact';
+        contactButton.style.cssText = `
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: transparent;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          font-size: 14px;
+          font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+          font-weight: normal;
+          cursor: pointer;
+          text-decoration: underline;
+          z-index: 1000;
+          pointer-events: auto;
+        `;
+        contactButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          console.log('Phone mode - Contact button clicked on SF logo tile');
+          
+          // Debug: Check if function exists
+          if (typeof showContactDescription === 'function') {
+            console.log('Phone mode - showContactDescription function exists, calling it');
+            showContactDescription();
+          } else {
+            console.error('Phone mode - showContactDescription function does not exist!');
+          }
+        });
+        
+        // Make sure the SF logo tile itself allows interaction
+        cell.style.zIndex = '100';
+        front.style.zIndex = '100';
+        front.style.pointerEvents = 'auto';
+        
+        front.appendChild(contactButton);
+        
+        // Phone mode: Use phone-specific homepage return
+        cell.addEventListener('click', (e) => {
+          e.stopPropagation();
+          phoneReturnToHomepage();
+        });
         
       } else if (cellIndex === 1) {
-        // Contact cell
-        cell.classList.add('contact');
-        cell.dataset.tab = 'contact';
-        
-        const contactLabel = document.createElement('span');
-        contactLabel.className = 'contact-label';
-        contactLabel.textContent = 'Contact';
-        front.appendChild(contactLabel);
-        
-        const contactLabelBack = document.createElement('span');
-        contactLabelBack.className = 'contact-label';
-        contactLabelBack.textContent = 'Contact';
-        back.appendChild(contactLabelBack);
-        
-        cell.addEventListener('click', () => switchTab('contact'));
-        
-      } else {
-        // Project cell
-        const sortedProjects = imageFolders
-          .sort((a, b) => a.name.localeCompare(b.name)); // Include ALL projects in alphabetical order
-        
-        const projectIndex = cellIndex - 2; // Subtract 2 for logo (0) and contact (1)
-        
-        console.log(`Phone mode - Project cell ${cellIndex}, projectIndex: ${projectIndex}, sortedProjects.length: ${sortedProjects.length}`);
-        
-        if (projectIndex < sortedProjects.length && projectIndex >= 0) {
-          const project = sortedProjects[projectIndex];
-          const firstImage = `${project.path}/1.${project.ext}`;
+        // Tile 2: Angelika - Now comes after SF logo
+        const angelikaProject = imageFolders.find(p => p.name === 'ANGELIKA');
+        if (angelikaProject) {
+          // Get random image from Angelika folder
+          const randomImageNum = Math.floor(Math.random() * angelikaProject.count) + 1;
+          const randomImage = `${angelikaProject.path}/${randomImageNum}.${angelikaProject.ext}`;
           
-          console.log(`Phone mode - Cell ${cellIndex} -> Project ${projectIndex}: ${project.name}, image: ${firstImage}`);
+          console.log(`Phone mode - Tile 2 (Angelika): ${angelikaProject.name}, image: ${randomImage}`);
           
-          // CRITICAL: Test if image exists by trying to load it
-          const testImg = new Image();
-          testImg.onload = () => {
-            console.log(`Phone mode - Image loaded successfully: ${firstImage}`);
-          };
-          testImg.onerror = () => {
-            console.error(`Phone mode - Image failed to load: ${firstImage}`);
-          };
-          testImg.src = firstImage;
-          
-          // Set the background image FIRST
-          back.style.backgroundImage = `url('${firstImage}')`;
+          // Set the background image
+          back.style.backgroundImage = `url('${randomImage}')`;
           back.style.backgroundSize = 'cover';
           back.style.backgroundPosition = 'center';
           back.style.backgroundRepeat = 'no-repeat';
-          back.style.backgroundColor = 'transparent'; // Remove green background to show image
+          back.style.backgroundColor = 'transparent';
           
-          // CRITICAL: Don't rotate the back element in phone mode - show it directly
-          back.style.transform = 'none'; // Remove rotation to show image immediately
+          // Don't rotate the back element in phone mode
+          back.style.transform = 'none';
           
           // Force the back element to be on top and visible
           back.style.visibility = 'visible';
           back.style.opacity = '1';
           back.style.zIndex = '10';
           
-          // Add project name as text to verify cell is working
+          // Add project name as text
+          const projectLabel = document.createElement('div');
+          projectLabel.textContent = angelikaProject.name;
+          projectLabel.style.color = 'white';
+          projectLabel.style.fontSize = '14px';
+          projectLabel.style.fontWeight = 'bold';
+          projectLabel.style.position = 'absolute';
+          projectLabel.style.top = '10px';
+          projectLabel.style.left = '10px';
+          projectLabel.style.zIndex = '20';
+          projectLabel.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+          back.appendChild(projectLabel);
+          
+          cell.dataset.folderIndex = imageFolders.indexOf(angelikaProject);
+          cell.dataset.projectName = angelikaProject.name;
+          
+          cell.style.pointerEvents = 'auto';
+          
+          // Add click handler for Angelika
+          cell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log(`Phone mode - Clicked Angelika project`);
+            
+            if (currentTab === 'contact') return;
+            
+            const imageUrl = back.style.backgroundImage.slice(5, -2);
+            const folderIndex = parseInt(cell.dataset.folderIndex);
+            openPhoneDetailView(imageUrl, folderIndex);
+          });
+        }
+        
+      } else if (cellIndex >= 2 && cellIndex <= 12) {
+        // Tiles 3-13: Other projects (use original array order, skip ANGELIKA)
+        const otherProjects = imageFolders
+          .filter(p => p.name !== 'ANGELIKA') // Exclude Angelika (already at tile 2)
+          .slice(0, 11); // Take first 11 projects (CLAYALLIANCE through SIGNALOGIA)
+        
+        console.log(`Phone mode - Other projects available:`, otherProjects.map(p => p.name));
+        console.log(`Phone mode - Total other projects: ${otherProjects.length}`);
+        
+        const projectIndex = cellIndex - 2; // Subtract 2 for logo (0) and Angelika (1)
+        
+        console.log(`Phone mode - Project cell ${cellIndex}, projectIndex: ${projectIndex}, otherProjects.length: ${otherProjects.length}`);
+        
+        if (projectIndex < otherProjects.length && projectIndex >= 0) {
+          const project = otherProjects[projectIndex];
+          const firstImage = `${project.path}/1.${project.ext}`;
+          
+          console.log(`Phone mode - Cell ${cellIndex} -> Project ${projectIndex}: ${project.name}, image: ${firstImage}`);
+          
+          // Set the background image
+          back.style.backgroundImage = `url('${firstImage}')`;
+          back.style.backgroundSize = 'cover';
+          back.style.backgroundPosition = 'center';
+          back.style.backgroundRepeat = 'no-repeat';
+          back.style.backgroundColor = 'transparent';
+          
+          // Don't rotate the back element in phone mode
+          back.style.transform = 'none';
+          
+          // Force the back element to be on top and visible
+          back.style.visibility = 'visible';
+          back.style.opacity = '1';
+          back.style.zIndex = '10';
+          
+          // Add project name as text
           const projectLabel = document.createElement('div');
           projectLabel.textContent = project.name;
           projectLabel.style.color = 'white';
@@ -2027,12 +3183,9 @@ function setupGrid() {
           cell.dataset.folderIndex = imageFolders.indexOf(project);
           cell.dataset.projectName = project.name;
           
-          // CRITICAL: Don't apply background sizing in phone mode - it might randomize images
-          // applyBackgroundSizing(back, cell.dataset.folderIndex);
-          
           cell.style.pointerEvents = 'auto';
           
-          // Add click handler for phone mode
+          // Add click handler for other projects
           cell.addEventListener('click', (e) => {
             e.stopPropagation();
             console.log(`Phone mode - Clicked project: ${project.name}`);
@@ -2041,17 +3194,95 @@ function setupGrid() {
             
             const imageUrl = back.style.backgroundImage.slice(5, -2);
             const folderIndex = parseInt(cell.dataset.folderIndex);
-            openDetailView(imageUrl, folderIndex);
+            openPhoneDetailView(imageUrl, folderIndex);
           });
         } else {
           // No more projects - make cell truly non-functional
-          console.log(`Phone mode - No project for index ${projectIndex}`);
+          console.log(`Phone mode - No project for index ${projectIndex} (cell ${cellIndex})`);
           cell.style.backgroundColor = 'transparent';
           cell.style.pointerEvents = 'none';
           cell.style.visibility = 'hidden';
           back.style.backgroundImage = '';
           front.style.backgroundImage = '';
         }
+        
+      } else if (cellIndex === 13) {
+        // Tile 14: SUTURE - handle specifically
+        const sutureProject = imageFolders.find(p => p.name === 'SUTURE');
+        if (sutureProject) {
+          const firstImage = `${sutureProject.path}/1.${sutureProject.ext}`;
+          
+          console.log(`Phone mode - Tile 13 (SUTURE): ${sutureProject.name}, image: ${firstImage}`);
+          
+          // Set the background image
+          back.style.backgroundImage = `url('${firstImage}')`;
+          back.style.backgroundSize = 'cover';
+          back.style.backgroundPosition = 'center';
+          back.style.backgroundRepeat = 'no-repeat';
+          back.style.backgroundColor = 'transparent';
+          
+          // Don't rotate the back element in phone mode
+          back.style.transform = 'none';
+          
+          // Force the back element to be on top and visible
+          back.style.visibility = 'visible';
+          back.style.opacity = '1';
+          back.style.zIndex = '10';
+          
+          // Add project name as text
+          const projectLabel = document.createElement('div');
+          projectLabel.textContent = sutureProject.name;
+          projectLabel.style.color = 'white';
+          projectLabel.style.fontSize = '14px';
+          projectLabel.style.fontWeight = 'bold';
+          projectLabel.style.position = 'absolute';
+          projectLabel.style.top = '10px';
+          projectLabel.style.left = '10px';
+          projectLabel.style.zIndex = '20';
+          projectLabel.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+          back.appendChild(projectLabel);
+          
+          cell.dataset.folderIndex = imageFolders.indexOf(sutureProject);
+          cell.dataset.projectName = sutureProject.name;
+          
+          cell.style.pointerEvents = 'auto';
+          
+          // Add click handler for SUTURE
+          cell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log(`Phone mode - Clicked SUTURE project`);
+            
+            if (currentTab === 'contact') return;
+            
+            const imageUrl = back.style.backgroundImage.slice(5, -2);
+            const folderIndex = parseInt(cell.dataset.folderIndex);
+            openPhoneDetailView(imageUrl, folderIndex);
+          });
+        }
+        
+      } else if (cellIndex === 14) {
+        // Tile 15: Bottom SF logo - directly after SUTURE, NO GAP
+        cell.classList.add('logo');
+        cell.dataset.tab = 'logo';
+        
+        const logoImg = document.createElement('img');
+        logoImg.src = 'SF Logo.png';
+        logoImg.alt = 'SOMETHING FOUND';
+        front.appendChild(logoImg);
+        
+        const logoImgBack = document.createElement('img');
+        logoImgBack.src = 'SF Logo.png';
+        logoImgBack.alt = 'SOMETHING FOUND';
+        back.appendChild(logoImgBack);
+        
+        cell.style.pointerEvents = 'auto';
+        
+        // Phone mode: Use phone-specific homepage return
+        cell.addEventListener('click', (e) => {
+          e.stopPropagation();
+          phoneReturnToHomepage();
+        });
+        
       }
       
       // ALWAYS add the cell to grid in phone mode
@@ -2198,29 +3429,49 @@ window.addEventListener('resize', () => {
 // Close buttons
 document.getElementById('detailCloseBtn').addEventListener('click', closeDetailView);
 
-// Universal homepage return function
 function returnToHomepage() {
   // Get all panels
   const contactPanel = document.getElementById('contactPanel');
   const detailPanel = document.getElementById('detailPanel');
+  const directoryPanel = document.getElementById('directoryPanel');
   const projectsPanel = document.getElementById('projectsPanel');
   const grid = document.querySelector('.grid');
   const blackOverlay = document.getElementById('blackOverlay');
+  const config = getGridConfig(); // Get config here
   
   // Reset currentTab FIRST to prevent detection issues
   currentTab = 'hybrid';
   
-  // Force remove panel classes FIRST to trigger CSS changes
-  if (contactPanel) {
+  // PHONE MODE: Unlock scroll when returning to homepage
+  if (config.cols === 1) {
+    document.body.classList.remove('detail-open');
+    console.log('Phone mode - Homepage returned, scroll unlocked');
+  }
+  
+  // Close contact panel if open
+  if (contactPanel && contactPanel.classList.contains('open')) {
     contactPanel.classList.remove('open');
   }
   
-  if (projectsPanel) {
-    projectsPanel.classList.remove('open');
+  // Close directory if open
+  if (directoryPanel && directoryPanel.classList.contains('open')) {
+    directoryPanel.classList.remove('open');
   }
   
+  // Handle detail view close based on mode
   if (detailPanel && detailPanel.classList.contains('open')) {
-    closeDetailView();
+    if (config.cols === 1) {
+      // Phone mode - use phone close function
+      closePhoneDetailView();
+    } else {
+      // Desktop mode - use desktop close function
+      closeDetailView();
+    }
+  }
+  
+  // Close projects panel if open
+  if (projectsPanel && projectsPanel.classList.contains('open')) {
+    projectsPanel.classList.remove('open');
   }
   
   // Add explicit grid visible class to override CSS
@@ -2231,103 +3482,11 @@ function returnToHomepage() {
   blackOverlay.style.visibility = 'visible';
   blackOverlay.style.display = 'block';
   
-  // Restore grid visibility
-  const cells = document.querySelectorAll('.cell');
-  const config = getGridConfig(); // Use dynamic config
-  cells.forEach(cell => cell.classList.remove('grid-hidden'));
+  // Re-enable scroll
+  document.body.classList.remove('detail-open');
   
-  // Restore top row tiles to normal state (remove black background)
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols);
-    if (row === 0) {
-      // Remove forced black backgrounds from top row
-      const back = cell.querySelector('.cell-back');
-      const front = cell.querySelector('.cell-front');
-      
-      // Clear forced black backgrounds
-      back.style.backgroundImage = '';
-      back.style.backgroundColor = '';
-      front.style.backgroundImage = '';
-      front.style.backgroundColor = '';
-      
-      // Remove contact-specific classes
-      back.classList.remove('contact-back');
-      cell.classList.remove('flipped');
-      
-      // Don't restore static tiles (logo, projects, contact)
-      if (!cell.classList.contains('static')) {
-        // For non-static top row tiles, restore normal background
-        const img = getRandomImage();
-        if (img) {
-          back.style.backgroundImage = `url('${img.url}')`;
-          cell.dataset.folderIndex = img.folderIndex;
-          cell.dataset.projectName = imageFolders[img.folderIndex].name;
-        }
-      }
-    }
-  });
-  
-  // Only generate images for non-top-row cells - NEVER for top row
-  const newImages = [];
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols); // Use dynamic config
-    // Don't touch top row (row 0) to prevent pictures in top row
-    if (row === 0) return;
-    newImages[i] = getRandomImage();
-  });
-  
-  // Only update non-top-row cells - NEVER for top row
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols); // Use dynamic config
-    // Don't touch top row cells
-    if (row === 0) return;
-    
-    cell.classList.remove('contact-flip');
-    cell.classList.remove('detail-bottom');
-    cell.classList.remove('animating');
-    cell.classList.remove('flipped');
-    cell.classList.remove('fading');
-    
-    const back = cell.querySelector('.cell-back');
-    back.classList.remove('contact-back');
-    
-    // Load new image onto back
-    if (newImages[i]) {
-      back.style.backgroundImage = `url('${newImages[i].url}')`;
-      cell.dataset.folderIndex = newImages[i].folderIndex;
-      cell.dataset.projectName = imageFolders[newImages[i].folderIndex].name;
-      if (newImages[i].contain) {
-        back.classList.add('contain');
-      } else {
-        back.classList.remove('contain');
-      }
-    }
-  });
-  
-  // SPECIFICALLY CLEAN UP TOP ROW TILES TO FIX BLACK TILE ISSUE
-  cells.forEach((cell, i) => {
-    const row = Math.floor(i / config.cols);
-    if (row === 0) {
-      const back = cell.querySelector('.cell-back');
-      // Remove any contact-back classes that might be causing black tiles
-      back.classList.remove('contact-back');
-      // Remove flipped class to eliminate white overlay
-      cell.classList.remove('flipped');
-      // Ensure transparent background for top row tiles - no black rectangles
-      if (cell.classList.contains('contact')) {
-        back.style.backgroundColor = 'transparent';
-        back.style.backgroundImage = 'none';
-      } else if (cell.classList.contains('projects')) {
-        back.style.backgroundColor = 'transparent';
-        back.style.backgroundImage = 'none';
-      }
-    }
-  });
-  
-  // Remove grid-visible class after a delay to ensure it stays visible
-  setTimeout(() => {
-    grid.classList.remove('grid-visible');
-  }, 1000);
+  // Refresh content tiles
+  refreshContentTiles();
 }
 
 // Update top row logo to be clickable
